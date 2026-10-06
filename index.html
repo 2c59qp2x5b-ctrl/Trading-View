@@ -3,1079 +3,714 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Phantom Euro Bank</title>
-  <!-- Polices et Icônes -->
+  <title>Phantom Euro Bank - Premium</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
+    :root {
+      --bg-main: #0b0e14;
+      --bg-card: #161b26;
+      --bg-nav: rgba(15, 19, 29, 0.95);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --border: rgba(255, 255, 255, 0.08);
+      --success: #10b981;
+      --danger: #ef4444;
+      --card-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.4);
     }
 
-    body {
-      background-color: #0b0e14;
-      color: #f3f4f6;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-      padding-bottom: 80px;
+    body.light-theme {
+      --bg-main: #f9fafb;
+      --bg-card: #ffffff;
+      --bg-nav: rgba(255, 255, 255, 0.95);
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border: rgba(0, 0, 0, 0.1);
+      --card-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.15);
     }
 
-    .app-viewport {
-      width: 100%;
-      max-width: 480px;
-      position: relative;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; transition: background-color 0.3s, color 0.3s; }
 
-    /* Page d'authentification */
+    /* AUTH SCREEN SPLIT */
     #auth-screen {
-      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      min-height: 100vh;
+      background: var(--bg-main);
+      z-index: 2000;
+      position: fixed;
+      top: 0; left: 0;
+    }
+    @media(min-width: 768px) { #auth-screen { flex-direction: row; } }
+    .auth-left {
+      flex: 1;
+      background: linear-gradient(135deg, #2563eb, #4c1d95);
       display: flex;
       flex-direction: column;
       justify-content: center;
-      min-height: 100vh;
-      background: radial-gradient(circle at top right, #1d2432, #0b0e14);
+      padding: 40px;
+      color: white;
     }
-
-    .auth-brand {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .auth-logo {
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      border-radius: 20px;
-      display: inline-flex;
-      align-items: center;
+    .auth-left h1 { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+    .auth-left p { font-size: 1.1rem; opacity: 0.9; }
+    .auth-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
-      color: #fff;
-      margin-bottom: 16px;
-      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+      padding: 40px;
+      background: var(--bg-card);
     }
-
-    .auth-title {
-      font-size: 26px;
-      font-weight: 800;
-      color: #fff;
+    .auth-form-container { max-width: 400px; width: 100%; margin: 0 auto; }
+    .social-logins { display: flex; gap: 12px; margin-top: 20px; justify-content: center; }
+    .social-btn {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: var(--bg-main); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-main); transition: transform 0.2s;
     }
+    .social-btn:hover { transform: scale(1.1); }
 
-    .auth-subtitle {
-      font-size: 14px;
-      color: #9ca3af;
-      margin-top: 6px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 8px;
-    }
-
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
     .form-input {
-      width: 100%;
-      background: #161b26;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 14px;
-      padding: 14px 16px;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-      transition: 0.2s;
-    }
-
-    .form-input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+      width: 100%; background: var(--bg-main); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 16px; color: var(--text-main); font-size: 15px; outline: none;
     }
 
     .primary-btn {
-      width: 100%;
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      padding: 16px;
-      border-radius: 16px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-      transition: 0.2s;
-      margin-top: 10px;
+      width: 100%; background: var(--accent); color: #fff; border: none;
+      padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
     }
+    .primary-btn:active { transform: scale(0.98); }
 
-    .primary-btn:hover {
-      background: #1d4ed8;
+    /* MAIN APP LAYOUT */
+    .app-viewport {
+      width: 100%; max-width: 480px; position: relative;
+      display: none; flex-direction: column; padding-bottom: 80px;
     }
+    .view-page { display: none; padding: 20px 16px; flex-direction: column; gap: 20px; animation: slideUp 0.4s ease forwards; }
+    .view-page.active { display: flex; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    .auth-toggle {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #9ca3af;
-      cursor: pointer;
-    }
-
-    .auth-toggle span {
-      color: #3b82f6;
-      font-weight: 600;
-    }
-
-    /* Vues Principales */
-    .view-page {
-      display: none;
-      padding: 20px 16px;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .view-page.active {
-      display: flex;
-    }
-
-    /* En-tête Dashboard */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
+    /* HEADER & TOOLS */
+    .header { display: flex; justify-content: space-between; align-items: center; }
+    .user-info { display: flex; align-items: center; gap: 12px; }
     .avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
+      width: 44px; height: 44px; border-radius: 50%;
       background: linear-gradient(135deg, #2563eb, #7c3aed);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: #fff;
+      display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;
     }
-
-    .welcome-text {
-      font-size: 13px;
-      color: #9ca3af;
-    }
-
-    .user-name {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
+    .header-tools { display: flex; gap: 8px; }
     .icon-btn {
-      background: #182030;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #f3f4f6;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main);
+      width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
     }
+    .icon-btn:active { transform: scale(0.9); }
 
-    /* Cartes Virtuelles */
-    .card-container {
-      background: linear-gradient(135deg, #1e40af, #4c1d95);
-      border-radius: 24px;
-      padding: 22px;
-      position: relative;
-      box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      overflow: hidden;
+    /* 3D CARD */
+    .card-scene {
+      perspective: 1000px; width: 100%; height: 200px; position: relative; z-index: 10;
     }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
+    .card-object {
+      width: 100%; height: 100%; position: relative; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; cursor: pointer;
     }
-
-    .card-brand {
-      font-weight: 700;
-      letter-spacing: 1px;
-      font-size: 14px;
-      opacity: 0.9;
+    .card-object.is-flipped { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+      border-radius: 24px; padding: 22px; box-shadow: var(--card-shadow); display: flex; flex-direction: column; justify-content: space-between; color: white; border: 1px solid rgba(255,255,255,0.2);
     }
-
-    .card-number {
-      font-size: 16px;
-      letter-spacing: 2px;
-      margin-bottom: 15px;
-      font-family: monospace;
-      opacity: 0.9;
+    .card-face-back { transform: rotateY(180deg); background: #111; }
+    
+    .btn-change-card {
+      position: absolute; top: 20px; right: 20px; width: 32px; height: 32px;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; border: 1px solid rgba(255,255,255,0.3); z-index: 20; transition: 0.2s;
     }
+    .btn-change-card:hover { background: rgba(255,255,255,0.4); }
 
-    .card-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
+    /* Card Themes */
+    .theme-phantom { background: linear-gradient(135deg, #1e40af, #4c1d95); color: #fff; }
+    .theme-amex { background: linear-gradient(135deg, #9ca3af, #e5e7eb); color: #111827; }
+    .theme-gold { background: linear-gradient(135deg, #ca8a04, #fef08a); color: #111827; }
+    .theme-black { background: linear-gradient(135deg, #111827, #374151); color: #fff; }
 
-    .card-balance-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      opacity: 0.7;
-    }
+    /* BALANCE SECTION */
+    .balance-section { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border); transition: 0.3s; }
+    .main-balance { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; transition: opacity 0.2s; }
+    .blur-text { filter: blur(8px); opacity: 0.5; user-select: none; }
 
-    .card-balance-val {
-      font-size: 22px;
-      font-weight: 700;
-    }
+    /* ACTIONS */
+    .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .action-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+    .action-btn { width: 54px; height: 54px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border); color: var(--accent); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .action-item:active .action-btn { transform: scale(0.9); background: var(--accent); color: #fff; }
 
-    /* Solde Principal */
-    .balance-section {
-      background: #161b26;
-      border-radius: 20px;
-      padding: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
+    /* PILLS & TRANSACTIONS */
+    .search-bar { width: 100%; background: var(--bg-main); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; color: var(--text-main); margin-bottom: 12px; outline: none; }
+    .pills-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .pill-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .pill-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    
+    .tx-item { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .tx-left { display: flex; align-items: center; gap: 12px; }
+    .tx-icon { width: 42px; height: 42px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; color: var(--accent); }
+    .tx-amount.positive { color: var(--success); } .tx-amount.negative { color: var(--danger); font-weight: bold; }
 
-    .balance-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
+    /* VAULTS (COFFRES-FORTS) */
+    .vault-card { background: var(--bg-card); padding: 16px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 12px; }
+    .vault-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: 600; }
+    .progress-bg { width: 100%; height: 8px; background: var(--bg-main); border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 1s ease; }
 
-    .label-title {
-      font-size: 13px;
-      color: #9ca3af;
-    }
+    /* CHARTS */
+    .chart-card { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border); }
+    .timeframes { display: flex; gap: 6px; background: var(--bg-main); padding: 4px; border-radius: 10px; }
+    .tf-btn { background: transparent; border: none; color: var(--text-muted); padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; }
+    .tf-btn.active { background: var(--accent); color: #fff; }
 
-    .main-balance {
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
+    /* BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--bg-nav); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+    .nav-item { color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
+    .nav-item.active { color: var(--accent); transform: translateY(-2px); }
 
-    .percentage-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-top: 8px;
-    }
-
-    /* Actions Rapides */
-    .actions-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-
-    .action-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
-    .action-btn {
-      width: 54px;
-      height: 54px;
-      border-radius: 18px;
-      background: #1d2432;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #3b82f6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-    }
-
-    .action-item:hover .action-btn {
-      background: #2563eb;
-      color: #fff;
-    }
-
-    .action-label {
-      font-size: 12px;
-      color: #9ca3af;
-    }
-
-    /* Graphique TradingView Style */
-    .chart-card {
-      background: #161b26;
-      border-radius: 20px;
-      padding: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .timeframes {
-      display: flex;
-      gap: 6px;
-      background: #0f131d;
-      padding: 4px;
-      border-radius: 10px;
-    }
-
-    .tf-btn {
-      background: transparent;
-      border: none;
-      color: #6b7280;
-      padding: 4px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .tf-btn.active {
-      background: #2563eb;
-      color: #fff;
-    }
-
-    /* Pilules / Filtres */
-    .pills-container {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      scrollbar-width: none;
-    }
-
-    .pill-btn {
-      background: #182030;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      color: #9ca3af;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
-    .pill-btn.active {
-      background: #2563eb;
-      color: #fff;
-      border-color: #2563eb;
-    }
-
-    /* Transactions */
-    .transactions-card {
-      background: #161b26;
-      border-radius: 20px;
-      padding: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .section-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .tx-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .tx-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      padding: 4px 0;
-    }
-
-    .tx-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .tx-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: #1f293d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #3b82f6;
-    }
-
-    .tx-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .tx-name {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .tx-date {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    .tx-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .tx-amount {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .tx-amount.positive { color: #10b981; }
-    .tx-amount.negative { color: #ef4444; }
-
-    .edit-dots-btn {
-      background: transparent;
-      border: none;
-      color: #6b7280;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .edit-dots-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
-
-    /* Bottom Navigation Bar */
-    .bottom-nav {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 480px;
-      background: rgba(15, 19, 29, 0.95);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 12px 24px;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .bottom-nav.active {
-      display: flex;
-    }
-
-    .nav-item {
-      color: #6b7280;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      transition: 0.2s;
-    }
-
-    .nav-item.active {
-      color: #2563eb;
-    }
-
-    /* Modals & Overlays */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.2s;
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-box {
-      background: #161b26;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 24px;
-      width: 90%;
-      max-width: 380px;
-    }
-
-    .modal-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 16px;
-    }
-
-    .modal-btn {
-      padding: 12px 20px;
-      border-radius: 12px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-cancel {
-      background: #1f293d;
-      color: #9ca3af;
-    }
-
-    .btn-save {
-      background: #2563eb;
-      color: #fff;
-    }
-
-    /* Fiche Détails Transaction Style Maquette */
-    .tx-detail-card {
-      background: #ffffff;
-      color: #111827;
-      border-radius: 24px;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .tx-detail-logo {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: #f3f4f6;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-    }
-
-    .tx-detail-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .tx-detail-type {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 12px;
-    }
-
-    .tx-detail-amount {
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    .tx-detail-map {
-      background: #f3f4f6;
-      border-radius: 16px;
-      padding: 16px;
-      text-align: left;
-      font-size: 13px;
-      color: #374151;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+    /* MODALS */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 90%; max-width: 380px; transform: scale(0.9); transition: 0.3s; }
+    .modal-overlay.active .modal-box { transform: scale(1); }
   </style>
 </head>
 <body>
 
-  <div class="app-viewport">
-
-    <!-- ECRAN 0 : AUTHENTIFICATION (LOGIN / INSCRIPTION) -->
-    <div id="auth-screen">
-      <div class="auth-brand">
-        <div class="auth-logo">
-          <i data-lucide="shield-check" size="36"></i>
+  <!-- AUTH SCREEN (SPLIT DESIGN) -->
+  <div id="auth-screen">
+    <div class="auth-left">
+      <h1>Let's make every day<br>Meaningful together.</h1>
+      <p>"Building meaningful experiences for a better financial future."</p>
+    </div>
+    <div class="auth-right">
+      <div class="auth-form-container">
+        <h2 style="font-size: 24px; margin-bottom: 24px; color: var(--text-main);">Connexion / Inscription</h2>
+        
+        <div class="form-group">
+          <label class="form-label">Nom complet</label>
+          <input type="text" id="auth-name" class="form-input" placeholder="ex: Ryan" value="Ryan">
         </div>
-        <div class="auth-title">Phantom Euro Bank</div>
-        <div class="auth-subtitle">Accédez à votre espace bancaire sécurisé VIP</div>
-      </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="contact@phantom.eu" value="contact@phantom.eu">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mot de passe</label>
+          <input type="password" class="form-input" placeholder="••••••••" value="12345678">
+        </div>
 
-      <div class="form-group">
-        <label class="form-label">Nom complet</label>
-        <input type="text" id="auth-name" class="form-input" placeholder="ex: John Lopez Silva" value="John Lopez Silva">
-      </div>
+        <button class="primary-btn" onclick="loginUser()">Accéder au Compte</button>
 
-      <div class="form-group">
-        <label class="form-label">Adresse E-mail</label>
-        <input type="email" class="form-input" placeholder="john.silva@phantom.eu" value="john.silva@phantom.eu">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Mot de passe</label>
-        <input type="password" class="form-input" placeholder="••••••••" value="12345678">
-      </div>
-
-      <button class="primary-btn" onclick="loginUser()">Accéder à mon compte</button>
-
-      <div class="auth-toggle">
-        Pas encore inscrit ? <span>Créer un compte</span>
+        <p style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted);">Ou continuer avec</p>
+        <div class="social-logins">
+          <div class="social-btn"><i data-lucide="chrome"></i></div>
+          <div class="social-btn"><i data-lucide="apple"></i></div>
+          <div class="social-btn"><i data-lucide="facebook"></i></div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- PAGE 1 : ACCUEIL / DASHBOARD -->
+  <!-- MAIN APP -->
+  <div class="app-viewport" id="main-app">
+
+    <!-- PAGE 1 : HOME -->
     <div id="page-home" class="view-page">
       <div class="header">
         <div class="user-info">
-          <div class="avatar" id="user-avatar">JS</div>
+          <div class="avatar" id="user-avatar">R</div>
           <div>
-            <div class="welcome-text">Bon retour,</div>
-            <div class="user-name" id="display-user-name">John Lopez Silva</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Bon retour,</div>
+            <div style="font-weight: 700;" id="display-user-name">Ryan</div>
           </div>
         </div>
-        <div class="icon-btn">
-          <i data-lucide="bell" size="20"></i>
+        <div class="header-tools">
+          <div class="icon-btn" onclick="cycleCurrency()"><i data-lucide="coins" size="18"></i></div>
+          <div class="icon-btn" onclick="toggleTheme()"><i data-lucide="moon" size="18" id="theme-icon"></i></div>
+          <div class="icon-btn" onclick="toggleBalance()"><i data-lucide="eye" size="18" id="eye-icon"></i></div>
         </div>
       </div>
 
-      <!-- Carte Virtuelle -->
-      <div class="card-container">
-        <div class="card-top">
-          <span class="card-brand">PHANTOM VIP</span>
-          <i data-lucide="wifi" size="20"></i>
-        </div>
-        <div class="card-number">•••• •••• •••• 2002</div>
-        <div class="card-bottom">
-          <div>
-            <div class="card-balance-title">Carte Débit</div>
-            <div class="card-balance-val">€ 250 000,00</div>
-          </div>
-          <span style="font-size: 12px; opacity: 0.8;">10/28</span>
-        </div>
-      </div>
-
-      <!-- Solde Principal -->
-      <div class="balance-section">
-        <div class="balance-header">
-          <span class="label-title">SOLDE TOTAL COMPTE</span>
-        </div>
-        <div class="main-balance" id="main-balance-val">€ 2 850 420,00</div>
-        <div class="percentage-badge">
-          <i data-lucide="trending-up" size="14"></i>
-          <span>+18.4% (+€288 000,00 ce mois)</span>
-        </div>
-      </div>
-
-      <!-- Actions Rapides -->
-      <div class="actions-grid">
-        <div class="action-item" onclick="openActionModal('send')">
-          <div class="action-btn"><i data-lucide="arrow-up-right" size="22"></i></div>
-          <span class="action-label">Envoyer</span>
-        </div>
-        <div class="action-item" onclick="openActionModal('receive')">
-          <div class="action-btn"><i data-lucide="arrow-down-left" size="22"></i></div>
-          <span class="action-label">Recevoir</span>
-        </div>
-        <div class="action-item" onclick="openActionModal('add')">
-          <div class="action-btn"><i data-lucide="plus" size="22"></i></div>
-          <span class="action-label">Ajouter</span>
-        </div>
-        <div class="action-item" onclick="openActionModal('option')">
-          <div class="action-btn"><i data-lucide="sliders" size="22"></i></div>
-          <span class="action-label">Option</span>
-        </div>
-      </div>
-
-      <!-- Aperçu Graphique -->
-      <div class="chart-card">
-        <div class="chart-header">
-          <span class="section-title" style="margin: 0;">Performance</span>
-          <div class="timeframes">
-            <button class="tf-btn" onclick="updateChart('1D')">1D</button>
-            <button class="tf-btn" onclick="updateChart('1W')">1W</button>
-            <button class="tf-btn active" onclick="updateChart('1M')">1M</button>
-            <button class="tf-btn" onclick="updateChart('1Y')">1Y</button>
-            <button class="tf-btn" onclick="updateChart('ALL')">ALL</button>
-          </div>
-        </div>
-        <canvas id="homeChart" height="150"></canvas>
-      </div>
-
-      <!-- Filtres Pilules -->
-      <div class="pills-container">
-        <button class="pill-btn active" onclick="filterTransactions('all')">Tous</button>
-        <button class="pill-btn" onclick="filterTransactions('trading')">Trading</button>
-        <button class="pill-btn" onclick="filterTransactions('shopping')">Shopping</button>
-        <button class="pill-btn" onclick="filterTransactions('nourriture')">Nourriture</button>
-        <button class="pill-btn" onclick="filterTransactions('voyages')">Voyages</button>
-      </div>
-
-      <!-- Liste Transactions -->
-      <div class="transactions-card">
-        <div class="section-title">
-          <span>Transactions Récentes</span>
-          <i data-lucide="search" size="18" style="color: #6b7280;"></i>
-        </div>
-        <div class="tx-list" id="tx-container">
-          <!-- Injecté dynamiquement par JS -->
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 2 : PORTEFEUILLE (WALLET) -->
-    <div id="page-wallet" class="view-page">
-      <div class="section-title" style="font-size: 22px;">Mes Portefeuilles & Cartes</div>
-      
-      <div class="card-container" style="background: linear-gradient(135deg, #059669, #10b981);">
-        <div class="card-top">
-          <span class="card-brand">CRYPTO & ASSETS</span>
-          <i data-lucide="bitcoin" size="20"></i>
-        </div>
-        <div class="card-number">0x71C...89A2</div>
-        <div class="card-bottom">
-          <div>
-            <div class="card-balance-title">Solde Crypto</div>
-            <div class="card-balance-val">€ 1 200 000,00</div>
-          </div>
-          <span style="font-size: 12px;">BTC / ETH</span>
-        </div>
-      </div>
-
-      <div class="balance-section">
-        <div class="section-title">Comptes Rattachés</div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-          <span>Compte Courant VIP</span>
-          <strong style="color: #10b981;">€ 1 650 420,00</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span>Coffre-Fort Épargne</span>
-          <strong style="color: #10b981;">€ 1 200 000,00</strong>
-        </div>
-      </div>
-
-      <button class="primary-btn" onclick="openActionModal('add')">+ Ajouter un nouveau portefeuille</button>
-    </div>
-
-    <!-- PAGE 3 : GRAPHIQUE (TRADINGVIEW DETALLE) -->
-    <div id="page-chart" class="view-page">
-      <div class="section-title" style="font-size: 22px;">Analyse Financière</div>
-      <div class="chart-card">
-        <div class="chart-header">
-          <span style="font-weight: 700;">Évolution du Patrimoine</span>
-          <div class="timeframes">
-            <button class="tf-btn" onclick="updateChart('1D')">1D</button>
-            <button class="tf-btn" onclick="updateChart('1W')">1W</button>
-            <button class="tf-btn active" onclick="updateChart('1M')">1M</button>
-            <button class="tf-btn" onclick="updateChart('1Y')">1Y</button>
-            <button class="tf-btn" onclick="updateChart('ALL')">ALL</button>
-          </div>
-        </div>
-        <canvas id="fullChart" height="220"></canvas>
-      </div>
-
-      <div class="transactions-card">
-        <div class="section-title">Statistiques du Mois</div>
-        <p style="color: #9ca3af; font-size: 14px;">Gains totaux : <strong style="color: #10b981;">+€434 000,00</strong></p>
-        <p style="color: #9ca3af; font-size: 14px; margin-top: 8px;">Dépenses totales : <strong style="color: #ef4444;">-€45 025,50</strong></p>
-      </div>
-    </div>
-
-    <!-- PAGE 4 : COMPTE / PROFIL -->
-    <div id="page-account" class="view-page">
-      <div class="section-title" style="font-size: 22px;">Mon Profil</div>
-
-      <div class="balance-section" style="text-align: center;">
-        <div class="avatar" style="width: 70px; height: 70px; font-size: 24px; margin: 0 auto 12px;" id="profile-avatar">JS</div>
-        <h3 id="profile-name">John Lopez Silva</h3>
-        <p style="color: #3b82f6; font-size: 13px; font-weight: 600; margin-top: 4px;">Membre VIP Platinum</p>
-      </div>
-
-      <div class="transactions-card">
-        <div class="section-title">Paramètres du Compte</div>
-        <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer;" onclick="openActionModal('option')">
-          Modifier le Solde Principal
-        </div>
-        <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
-          Sécurité & Biométrie (Activé)
-        </div>
-        <div style="padding: 12px 0; color: #ef4444; cursor: pointer;" onclick="logoutUser()">
-          Se déconnecter
-        </div>
-      </div>
-    </div>
-
-    <!-- BOTTOM NAVIGATION BAR -->
-    <div class="bottom-nav" id="main-nav">
-      <div class="nav-item active" onclick="switchTab('home')">
-        <i data-lucide="home" size="22"></i>
-      </div>
-      <div class="nav-item" onclick="switchTab('wallet')">
-        <i data-lucide="wallet" size="22"></i>
-      </div>
-      <div class="nav-item" onclick="switchTab('chart')">
-        <i data-lucide="bar-chart-2" size="22"></i>
-      </div>
-      <div class="nav-item" onclick="switchTab('account')">
-        <i data-lucide="user" size="22"></i>
-      </div>
-    </div>
-
-    <!-- MODAL D'ACTIONS (Envoyer / Recevoir / Ajouter / Option) -->
-    <div class="modal-overlay" id="actionModal">
-      <div class="modal-box">
-        <div class="modal-title" id="actionModalTitle">Action</div>
-        <div id="actionModalBody">
-          <label class="form-label">Montant (€)</label>
-          <input type="number" class="form-input" id="actionAmount" placeholder="ex: 50000">
-          <label class="form-label" style="margin-top: 12px;">Description / Intitulé</label>
-          <input type="text" class="form-input" id="actionDesc" placeholder="ex: Profit Trading / Achat">
-        </div>
-        <div class="modal-actions">
-          <button class="modal-btn btn-cancel" onclick="closeModal('actionModal')">Annuler</button>
-          <button class="modal-btn btn-save" onclick="executeAction()">Confirmer</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL DE DÉTAILS TRANSACTION -->
-    <div class="modal-overlay" id="txDetailModal">
-      <div class="modal-box" style="padding: 0; background: transparent; border: none;">
-        <div class="tx-detail-card">
-          <div class="tx-detail-logo" id="detail-logo">
-            <i data-lucide="shopping-bag" size="28" style="color: #2563eb;"></i>
-          </div>
-          <div class="tx-detail-title" id="detail-title">Starbucks Coffee</div>
-          <div class="tx-detail-type" id="detail-type">Achat CB • Carte Débit</div>
-          <div class="tx-detail-amount" id="detail-amount">- €2,50</div>
-
-          <div class="tx-detail-map">
-            <i data-lucide="map-pin" size="20" style="color: #2563eb;"></i>
-            <div>
-              <strong>Avenue des Champs-Élysées</strong><br>
-              Paris, France • Hier 15:30
+      <!-- 3D CARD COMPONENT -->
+      <div class="card-scene">
+        <div class="card-object" id="main-card" onclick="toggleCardFlip()">
+          <!-- FRONT -->
+          <div class="card-face theme-phantom" id="card-front">
+            <div class="btn-change-card" onclick="changeCardStyle(event)"><i data-lucide="plus" size="18"></i></div>
+            <div style="display: flex; justify-content: space-between;">
+              <strong style="letter-spacing: 1px;" id="card-brand-text">PHANTOM VIP</strong>
+              <i data-lucide="wifi" size="20"></i>
+            </div>
+            <div style="font-size: 18px; letter-spacing: 2px; font-family: monospace;">•••• •••• •••• 2026</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+              <div>
+                <div style="font-size: 11px; opacity: 0.7;">Solde Carte</div>
+                <div style="font-size: 20px; font-weight: 700;" class="display-balance">2 850 420,00</div>
+              </div>
+              <span style="font-size: 12px; opacity: 0.8;">10/28</span>
             </div>
           </div>
-          
-          <button class="primary-btn" style="margin-top: 16px;" onclick="closeModal('txDetailModal')">Fermer</button>
+          <!-- BACK -->
+          <div class="card-face card-face-back theme-phantom" id="card-back">
+            <div style="width: 100%; height: 40px; background: #000; margin-left: -22px; width: calc(100% + 44px); margin-top: 10px;"></div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;">
+              <div style="flex: 1; background: #fff; color: #000; padding: 10px; border-radius: 4px; text-align: right; font-family: monospace; font-weight: bold;">
+                CVV: 842
+              </div>
+              <button style="padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;" onclick="event.stopPropagation(); alert('Numéro copié !');">Copier</button>
+            </div>
+            <div style="font-size: 10px; text-align: center; opacity: 0.5; margin-top: auto;">Support: support@phantom.eu</div>
+          </div>
         </div>
+      </div>
+
+      <!-- BALANCE -->
+      <div class="balance-section">
+        <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 5px;">Solde Total</div>
+        <div class="main-balance display-balance" id="main-balance-val">2 850 420,00</div>
+        <div style="display: inline-flex; align-items: center; gap: 4px; background: rgba(16, 185, 129, 0.15); color: var(--success); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 8px;">
+          <i data-lucide="trending-up" size="14"></i> +18.4% ce mois
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="actions-grid">
+        <div class="action-item" onclick="openActionModal('send')">
+          <div class="action-btn"><i data-lucide="arrow-up-right"></i></div>
+          <span style="font-size: 12px; color: var(--text-muted);">Envoyer</span>
+        </div>
+        <div class="action-item" onclick="openActionModal('receive')">
+          <div class="action-btn"><i data-lucide="arrow-down-left"></i></div>
+          <span style="font-size: 12px; color: var(--text-muted);">Recevoir</span>
+        </div>
+        <div class="action-item" onclick="openActionModal('add')">
+          <div class="action-btn"><i data-lucide="plus"></i></div>
+          <span style="font-size: 12px; color: var(--text-muted);">Ajouter</span>
+        </div>
+        <div class="action-item" onclick="openActionModal('option')">
+          <div class="action-btn"><i data-lucide="sliders"></i></div>
+          <span style="font-size: 12px; color: var(--text-muted);">Option</span>
+        </div>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div class="balance-section">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: bold;">
+          Transactions
+        </div>
+        <input type="text" class="search-bar" placeholder="Rechercher (ex: Starbucks, Crypto...)" id="tx-search" onkeyup="searchTx()">
+        <div class="pills-container">
+          <button class="pill-btn active" onclick="filterTx('all', event)">Tous</button>
+          <button class="pill-btn" onclick="filterTx('Trading', event)">Trading</button>
+          <button class="pill-btn" onclick="filterTx('Shopping', event)">Shopping</button>
+          <button class="pill-btn" onclick="filterTx('Nourriture', event)">Nourriture</button>
+        </div>
+        <div id="tx-container" style="display: flex; flex-direction: column; margin-top: 12px;"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 2 : WALLET (VAULTS & CARDS) -->
+    <div id="page-wallet" class="view-page">
+      <h2 style="font-size: 22px;">Coffres-Forts (Vaults)</h2>
+      
+      <div class="vault-card">
+        <div class="vault-header"><span>Voyage Japon 2027</span> <span class="display-balance">4 500,00</span></div>
+        <div class="progress-bg"><div class="progress-fill" style="width: 45%;"></div></div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: right;">Objectif: 10 000</div>
+      </div>
+      
+      <div class="vault-card">
+        <div class="vault-header"><span>Épargne Crypto</span> <span class="display-balance">120 000,00</span></div>
+        <div class="progress-bg"><div class="progress-fill" style="width: 80%; background: #f59e0b;"></div></div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: right;">Objectif: 150 000</div>
+      </div>
+
+      <h2 style="font-size: 22px; margin-top: 20px;">Commander une carte physique</h2>
+      <div class="balance-section" style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="pill-btn active" style="flex: 1;">Noir Mat</button>
+        <button class="pill-btn" style="flex: 1;">Or VIP</button>
+        <button class="pill-btn" style="flex: 1;">Métal Lourd</button>
+        <button class="primary-btn" style="margin-top: 10px;" onclick="alert('Commande validée !')">Commander</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3 : CHART (ANALYTICS) -->
+    <div id="page-chart" class="view-page">
+      <h2 style="font-size: 22px;">Analytiques</h2>
+      
+      <div class="chart-card">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+          <span style="font-weight: 700;">Évolution</span>
+          <div class="timeframes">
+            <button class="tf-btn" onclick="updateChart('1D', event)">1D</button>
+            <button class="tf-btn active" onclick="updateChart('1M', event)">1M</button>
+            <button class="tf-btn" onclick="updateChart('ALL', event)">ALL</button>
+          </div>
+        </div>
+        <canvas id="lineChart" height="180"></canvas>
+      </div>
+
+      <div class="chart-card" style="margin-top: 10px;">
+        <span style="font-weight: 700; display: block; margin-bottom: 16px;">Répartition Budget Mensuel</span>
+        <canvas id="doughnutChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- PAGE 4 : ACCOUNT -->
+    <div id="page-account" class="view-page">
+      <h2 style="font-size: 22px;">Mon Profil</h2>
+      <div class="balance-section" style="text-align: center;">
+        <div class="avatar" style="width: 70px; height: 70px; font-size: 24px; margin: 0 auto 12px;" id="profile-avatar">R</div>
+        <h3 id="profile-name">Ryan</h3>
+        <p style="color: var(--accent); font-size: 13px; font-weight: 600;">Membre VIP Platinum</p>
+      </div>
+
+      <div class="balance-section">
+        <h3 style="font-size: 16px; margin-bottom: 16px;">Sécurité Carte</h3>
+        
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 14px;">Plafond Paiement</span>
+            <span style="font-weight: bold;">50 000 / mois</span>
+          </div>
+          <input type="range" min="1000" max="100000" value="50000" style="width: 100%; accent-color: var(--accent);">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-top: 1px solid var(--border);">
+          <span>Bloquer la carte</span>
+          <input type="checkbox" style="width: 40px; height: 20px; accent-color: var(--danger);">
+        </div>
+      </div>
+
+      <button class="primary-btn" style="background: var(--bg-card); color: var(--danger); border: 1px solid var(--border);" onclick="logoutUser()">Se déconnecter</button>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="switchTab('home', 0)"><i data-lucide="home"></i></div>
+      <div class="nav-item" onclick="switchTab('wallet', 1)"><i data-lucide="wallet"></i></div>
+      <div class="nav-item" onclick="switchTab('chart', 2)"><i data-lucide="pie-chart"></i></div>
+      <div class="nav-item" onclick="switchTab('account', 3)"><i data-lucide="user"></i></div>
+    </div>
+
+    <!-- MODAL ACTIONS -->
+    <div class="modal-overlay" id="actionModal">
+      <div class="modal-box">
+        <h3 id="actionModalTitle" style="margin-bottom: 16px;">Action</h3>
+        <input type="number" id="actionAmount" class="form-input" placeholder="Montant" style="margin-bottom: 12px;">
+        <input type="text" id="actionDesc" class="form-input" placeholder="Description (ex: Achat Web)">
+        <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;">
+          <button style="padding: 10px 16px; border-radius: 12px; background: var(--bg-main); color: var(--text-muted); border: none;" onclick="closeModal('actionModal')">Annuler</button>
+          <button style="padding: 10px 16px; border-radius: 12px; background: var(--accent); color: white; border: none;" onclick="executeAction()">Confirmer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL TRANSACTION DETAILS -->
+    <div class="modal-overlay" id="txDetailModal">
+      <div class="modal-box" style="text-align: center;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--bg-main); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--accent);">
+          <i data-lucide="file-text" size="28"></i>
+        </div>
+        <h2 id="detail-title">Transaction</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">CB • Carte Débit</p>
+        <h1 id="detail-amount" style="margin-bottom: 20px;">0,00</h1>
+        
+        <button class="primary-btn" onclick="alert('Téléchargement du reçu PDF en cours...');">Télécharger le Reçu</button>
+        <button style="width: 100%; padding: 12px; margin-top: 8px; background: transparent; border: none; color: var(--text-muted);" onclick="closeModal('txDetailModal')">Fermer</button>
       </div>
     </div>
 
   </div>
 
   <script>
-    // Données de base des transactions
-    let transactions = [
-      { id: 1, name: "Gain Trading Crypto", date: "Aujourd'hui, 14:20", amount: 120000, type: "gain", category: "trading" },
-      { id: 2, name: "Achat Montre de Luxe", date: "Hier, 18:45", amount: -45000, type: "loss", category: "shopping" },
-      { id: 3, name: "Rendement Dividendes", date: "02 Oct 2026", amount: 314000, type: "gain", category: "trading" },
-      { id: 4, name: "Starbucks Reserve", date: "28 Sep 2026", amount: -25.50, type: "loss", category: "nourriture" }
+    // ETAT GLOBAL
+    let baseBalanceEuro = 2850420.00;
+    let currentBalance = baseBalanceEuro;
+    let isHidden = false;
+    let currencyIndex = 0;
+    const currencies = [
+      { sym: '€', rate: 1, loc: 'fr-FR' },
+      { sym: '$', rate: 1.08, loc: 'en-US' },
+      { sym: '£', rate: 0.85, loc: 'en-GB' },
+      { sym: '₿', rate: 0.000015, loc: 'en-US' }
     ];
+    let txList = [
+      { id: 1, name: "Gain Trading Crypto", date: "Auj, 14:20", amount: 120000, cat: "Trading" },
+      { id: 2, name: "Achat Montre Luxe", date: "Hier", amount: -45000, cat: "Shopping" },
+      { id: 3, name: "Starbucks Reserve", date: "28 Sep", amount: -25.5, cat: "Nourriture" }
+    ];
+    let currentFilter = 'all';
 
-    let currentBalance = 2850420.00;
-    let currentActionType = '';
+    // INIT
+    lucide.createIcons();
+    initCharts();
 
-    // Initialisation
-    window.onload = () => {
-      lucide.createIcons();
-      renderTransactions(transactions);
-      initCharts();
-    };
-
-    // Authentification
+    // AUTH
     function loginUser() {
-      const name = document.getElementById('auth-name').value || 'John Lopez Silva';
+      const name = document.getElementById('auth-name').value || 'Client';
+      const initial = name.charAt(0).toUpperCase();
       document.getElementById('display-user-name').innerText = name;
       document.getElementById('profile-name').innerText = name;
+      document.getElementById('user-avatar').innerText = initial;
+      document.getElementById('profile-avatar').innerText = initial;
       
-      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
-      document.getElementById('user-avatar').innerText = initials;
-      document.getElementById('profile-avatar').innerText = initials;
-
       document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('main-nav').classList.add('active');
-      switchTab('home');
+      document.getElementById('main-app').style.display = 'flex';
+      renderTx();
+      updateUIBalances(currentBalance, currentBalance);
     }
-
     function logoutUser() {
-      document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
-      document.getElementById('main-nav').classList.remove('active');
       document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('main-app').style.display = 'none';
     }
 
-    // Swapping Tabs Navigation
-    function switchTab(tabId) {
+    // NAVIGATION
+    function switchTab(page, index) {
       document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-
-      document.getElementById(`page-${tabId}`).classList.add('active');
-      
-      const navIndex = { 'home': 0, 'wallet': 1, 'chart': 2, 'account': 3 }[tabId];
-      document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+      document.getElementById('page-' + page).classList.add('active');
+      document.querySelectorAll('.nav-item')[index].classList.add('active');
     }
 
-    // Affichage Transactions
-    function renderTransactions(list) {
+    // THEME & EYE & CURRENCY
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+      const icon = document.body.classList.contains('light-theme') ? 'sun' : 'moon';
+      document.getElementById('theme-icon').setAttribute('data-lucide', icon);
+      lucide.createIcons();
+      updateChartColors();
+    }
+
+    function toggleBalance() {
+      isHidden = !isHidden;
+      const icon = isHidden ? 'eye-off' : 'eye';
+      document.getElementById('eye-icon').setAttribute('data-lucide', icon);
+      lucide.createIcons();
+      
+      document.querySelectorAll('.display-balance').forEach(el => {
+        if(isHidden) {
+          el.setAttribute('data-val', el.innerText);
+          el.innerText = '•••••••';
+          el.classList.add('blur-text');
+        } else {
+          el.innerText = el.getAttribute('data-val');
+          el.classList.remove('blur-text');
+        }
+      });
+    }
+
+    function cycleCurrency() {
+      if(isHidden) toggleBalance(); // Afficher avant de changer
+      currencyIndex = (currencyIndex + 1) % currencies.length;
+      updateUIBalances(baseBalanceEuro, baseBalanceEuro);
+    }
+
+    // FORMATAGE & ANIMATION SOLDE
+    function formatMoney(val) {
+      const c = currencies[currencyIndex];
+      const converted = val * c.rate;
+      const decimals = c.sym === '₿' ? 4 : 2;
+      return c.sym + ' ' + converted.toLocaleString(c.loc, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function animateValue(startVal, endVal, duration) {
+      if(isHidden) toggleBalance();
+      const els = document.querySelectorAll('.display-balance');
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const current = startVal + progress * (endVal - startVal);
+        els.forEach(el => el.innerText = formatMoney(current));
+        if (progress < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    function updateUIBalances(oldVal, newVal) {
+      baseBalanceEuro = newVal;
+      currentBalance = newVal;
+      if (oldVal !== newVal) {
+        animateValue(oldVal, newVal, 1000);
+      } else {
+        document.querySelectorAll('.display-balance').forEach(el => el.innerText = formatMoney(newVal));
+      }
+      renderTx();
+    }
+
+    // 3D CARD
+    function toggleCardFlip() {
+      document.getElementById('main-card').classList.toggle('is-flipped');
+    }
+    
+    let cardThemes = [
+      { c: 'theme-phantom', n: 'PHANTOM VIP' },
+      { c: 'theme-amex', n: 'PLATINUM CARD' },
+      { c: 'theme-gold', n: 'VISA GOLD' },
+      { c: 'theme-black', n: 'BLACK METAL' }
+    ];
+    let themeIdx = 0;
+    
+    function changeCardStyle(e) {
+      e.stopPropagation();
+      const front = document.getElementById('card-front');
+      const back = document.getElementById('card-back');
+      
+      front.classList.remove(cardThemes[themeIdx].c);
+      back.classList.remove(cardThemes[themeIdx].c);
+      
+      themeIdx = (themeIdx + 1) % cardThemes.length;
+      
+      front.classList.add(cardThemes[themeIdx].c);
+      back.classList.add(cardThemes[themeIdx].c);
+      document.getElementById('card-brand-text').innerText = cardThemes[themeIdx].n;
+    }
+
+    // TRANSACTIONS
+    function renderTx() {
       const container = document.getElementById('tx-container');
       container.innerHTML = '';
+      
+      let filtered = txList;
+      if(currentFilter !== 'all') {
+        filtered = txList.filter(t => t.cat === currentFilter);
+      }
+      
+      const search = document.getElementById('tx-search').value.toLowerCase();
+      if(search) {
+        filtered = filtered.filter(t => t.name.toLowerCase().includes(search));
+      }
 
-      list.forEach(tx => {
+      filtered.forEach(tx => {
         const isPos = tx.amount > 0;
-        const formattedAmount = (isPos ? '+ €' : '- €') + Math.abs(tx.amount).toLocaleString('fr-FR', { minimumFractionDigits: 2 });
+        const icon = isPos ? 'trending-up' : 'shopping-bag';
+        const fAmt = (isPos ? '+' : '') + formatMoney(tx.amount);
         
         container.innerHTML += `
-          <div class="tx-item" onclick="openTxDetail('${tx.name}', '${formattedAmount}', ${isPos})">
+          <div class="tx-item" onclick="openTxDetail('${tx.name}', '${fAmt}', ${isPos})">
             <div class="tx-left">
-              <div class="tx-icon" style="${isPos ? 'color: #10b981; background: rgba(16, 185, 129, 0.1);' : ''}">
-                <i data-lucide="${isPos ? 'trending-up' : 'shopping-bag'}" size="20"></i>
+              <div class="tx-icon" style="${isPos ? 'color: var(--success); background: rgba(16, 185, 129, 0.1);' : ''}">
+                <i data-lucide="${icon}"></i>
               </div>
-              <div class="tx-details">
-                <span class="tx-name">${tx.name}</span>
-                <span class="tx-date">${tx.date}</span>
+              <div>
+                <div style="font-weight: 600; font-size: 14px;">${tx.name}</div>
+                <div style="font-size: 12px; color: var(--text-muted);">${tx.date} • ${tx.cat}</div>
               </div>
             </div>
-            <div class="tx-right">
-              <span class="tx-amount ${isPos ? 'positive' : 'negative'}">${formattedAmount}</span>
-              <button class="edit-dots-btn" onclick="event.stopPropagation(); openEditTxModal(${tx.id})">
-                <i data-lucide="more-vertical" size="16"></i>
-              </button>
-            </div>
+            <div class="tx-amount ${isPos ? 'positive' : 'negative'}">${fAmt}</div>
           </div>
         `;
       });
       lucide.createIcons();
     }
 
-    // Modal Actions (Envoyer / Recevoir / Ajouter / Option)
+    function filterTx(cat, event) {
+      document.querySelectorAll('.pills-container .pill-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      currentFilter = cat;
+      renderTx();
+    }
+
+    function searchTx() { renderTx(); }
+
+    // MODALS ACTIONS
+    let currentAction = '';
     function openActionModal(type) {
-      currentActionType = type;
+      currentAction = type;
       const title = document.getElementById('actionModalTitle');
       document.getElementById('actionAmount').value = '';
       document.getElementById('actionDesc').value = '';
-
-      if (type === 'send') title.innerText = 'Envoyer de l\'argent';
-      else if (type === 'receive') title.innerText = 'Recevoir de l\'argent';
-      else if (type === 'add') title.innerText = 'Ajouter de l\'argent au compte';
-      else if (type === 'option') title.innerText = 'Modifier le Solde Principal';
-
+      if(type==='send') title.innerText = 'Envoyer de l\'argent';
+      if(type==='receive') title.innerText = 'Recevoir de l\'argent';
+      if(type==='add') title.innerText = 'Ajouter des fonds';
+      if(type==='option') title.innerText = 'Modifier Solde (Cheat)';
       document.getElementById('actionModal').classList.add('active');
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-    }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
     function executeAction() {
-      const val = parseFloat(document.getElementById('actionAmount').value) || 0;
-      const desc = document.getElementById('actionDesc').value || 'Mouvement de fond';
+      const valInput = parseFloat(document.getElementById('actionAmount').value) || 0;
+      // Convertir la valeur saisie (selon la devise actuelle) vers l'euro pour le stockage
+      const valEuro = valInput / currencies[currencyIndex].rate; 
+      const desc = document.getElementById('actionDesc').value || 'Transaction';
+      let old = baseBalanceEuro;
+      let newB = old;
 
-      if (currentActionType === 'send') {
-        currentBalance -= val;
-        transactions.unshift({ id: Date.now(), name: desc, date: "Aujourd'hui", amount: -val, type: "loss", category: "shopping" });
-      } else if (currentActionType === 'receive' || currentActionType === 'add') {
-        currentBalance += val;
-        transactions.unshift({ id: Date.now(), name: desc, date: "Aujourd'hui", amount: val, type: "gain", category: "trading" });
-      } else if (currentActionType === 'option') {
-        currentBalance = val;
+      if(currentAction==='send') {
+        newB -= valEuro;
+        txList.unshift({ id: Date.now(), name: desc, date: "À l'instant", amount: -valEuro, cat: "Shopping" });
+      } else if(currentAction==='receive' || currentAction==='add') {
+        newB += valEuro;
+        txList.unshift({ id: Date.now(), name: desc, date: "À l'instant", amount: valEuro, cat: "Trading" });
+      } else if(currentAction==='option') {
+        newB = valEuro;
       }
-
-      document.getElementById('main-balance-val').innerText = '€ ' + currentBalance.toLocaleString('fr-FR', { minimumFractionDigits: 2 });
-      renderTransactions(transactions);
+      
+      updateUIBalances(old, newB);
       closeModal('actionModal');
     }
 
-    // Modal Détails Transaction
-    function openTxDetail(name, amount, isPos) {
+    function openTxDetail(name, amt, isPos) {
       document.getElementById('detail-title').innerText = name;
-      document.getElementById('detail-amount').innerText = amount;
-      document.getElementById('detail-amount').style.color = isPos ? '#10b981' : '#ef4444';
+      document.getElementById('detail-amount').innerText = amt;
+      document.getElementById('detail-amount').style.color = isPos ? 'var(--success)' : 'var(--danger)';
       document.getElementById('txDetailModal').classList.add('active');
     }
 
-    // Chart.js Setup
-    let mainChart;
+    // CHARTS
+    let lineC, doughC;
     function initCharts() {
-      const ctx = document.getElementById('homeChart').getContext('2d');
-      mainChart = new Chart(ctx, {
+      Chart.defaults.color = '#9ca3af';
+      Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+      
+      const ctx1 = document.getElementById('lineChart').getContext('2d');
+      lineC = new Chart(ctx1, {
         type: 'line',
         data: {
-          labels: ['Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct'],
-          datasets: [{
-            data: [1800000, 2100000, 1950000, 2400000, 2300000, 2850420],
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.15)',
-            fill: true,
-            tension: 0.35,
-            pointRadius: 3
-          }]
+          labels: ['S1', 'S2', 'S3', 'S4'],
+          datasets: [{ data: [1.8, 2.1, 2.4, 2.8], borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', fill: true, tension: 0.4 }]
         },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { display: false }, ticks: { color: '#6b7280' } },
-            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#6b7280' } }
-          }
-        }
+        options: { plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(150,150,150,0.1)'}}} }
+      });
+
+      const ctx2 = document.getElementById('doughnutChart').getContext('2d');
+      doughC = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Trading', 'Shopping', 'Voyages', 'Nourriture'],
+          datasets: [{ data: [45, 30, 15, 10], backgroundColor: ['#2563eb', '#8b5cf6', '#10b981', '#f59e0b'], borderWidth: 0 }]
+        },
+        options: { cutout: '75%', plugins: { legend: { position: 'right' } } }
       });
     }
 
-    function updateChart(tf) {
-      document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      if (tf === '1D') mainChart.data.datasets[0].data = [2810000, 2830000, 2850420];
-      else mainChart.data.datasets[0].data = [1800000, 2100000, 1950000, 2400000, 2300000, 2850420];
-      mainChart.update();
+    function updateChart(tf, e) {
+      document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      if(tf==='1D') lineC.data.datasets[0].data = [2.80, 2.82, 2.84, 2.85];
+      else lineC.data.datasets[0].data = [1.8, 2.1, 2.4, 2.85];
+      lineC.update();
     }
-
-    function filterTransactions(cat) {
-      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      if (cat === 'all') renderTransactions(transactions);
-      else renderTransactions(transactions.filter(t => t.category === cat));
+    
+    function updateChartColors() {
+      // Pour une implémentation avancée, on mettrait à jour les couleurs de la grille ici
+      lineC.update(); doughC.update();
     }
   </script>
 </body>
