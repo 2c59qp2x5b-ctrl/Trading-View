@@ -2,134 +2,801 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Banque & Portfolio VIP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Phantom Euro Bank</title>
+  <!-- Polices et Icônes -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
   <style>
-    body {
-      background-color: #131722;
-      color: #d1d4dc;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #0b0e14;
+      color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* En-tête Profil */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .welcome-text {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .user-name {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .icon-btn {
+      background: #182030;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f3f4f6;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .badge-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      background-color: #2563eb;
+      border-radius: 50%;
+    }
+
+    /* Carte Bancaire Virtuelle */
+    .card-container {
+      background: linear-gradient(135deg, #1e40af, #4c1d95);
+      border-radius: 24px;
+      padding: 22px;
+      position: relative;
+      box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+    }
+
+    .card-bg-decoration {
+      position: absolute;
+      right: -20px;
+      bottom: -20px;
+      width: 150px;
+      height: 150px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .card-brand {
+      font-weight: 700;
+      letter-spacing: 1px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .card-number {
+      font-size: 16px;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      font-family: monospace;
+      opacity: 0.9;
+    }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .card-balance-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .card-balance-val {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    /* Section Solde Principal */
+    .balance-section {
+      background: #161b26;
+      border-radius: 20px;
       padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
+
+    .balance-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
     }
-    .balance-card {
-      background: #1e222d;
-      padding: 25px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      border: 1px solid #2a2e39;
+
+    .label-title {
+      font-size: 13px;
+      color: #9ca3af;
     }
-    .balance-title { color: #787b86; font-size: 14px; letter-spacing: 1px; }
-    .balance-amount { font-size: 42px; font-weight: bold; color: #26a69a; margin: 10px 0; }
-    .chart-container {
-      background: #1e222d;
+
+    .value-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .main-balance {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .edit-dots-btn {
+      background: transparent;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+
+    .edit-dots-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .percentage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* Action Buttons */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .action-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: #1d2432;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #3b82f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+
+    .action-item:hover .action-btn {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .action-label {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    /* Chart Section TradingView Style */
+    .chart-card {
+      background: #161b26;
+      border-radius: 20px;
       padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      border: 1px solid #2a2e39;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .history-card {
-      background: #1e222d;
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .timeframes {
+      display: flex;
+      gap: 6px;
+      background: #0f131d;
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .tf-btn {
+      background: transparent;
+      border: none;
+      color: #6b7280;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .tf-btn.active {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    /* Filter Pills */
+    .pills-container {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .pill-btn {
+      background: #182030;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #9ca3af;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .pill-btn.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+    }
+
+    /* Historique des Transactions */
+    .transactions-card {
+      background: #161b26;
+      border-radius: 20px;
       padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #2a2e39;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { padding: 14px; text-align: left; border-bottom: 1px solid #2a2e39; }
-    th { color: #787b86; font-size: 13px; }
-    .profit { color: #26a69a; font-weight: bold; }
-    .loss { color: #ef5350; font-weight: bold; }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tx-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: #1f293d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3b82f6;
+    }
+
+    .tx-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tx-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .tx-date {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .tx-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tx-amount {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .tx-amount.positive { color: #10b981; }
+    .tx-amount.negative { color: #ef4444; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: rgba(15, 19, 29, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-item {
+      color: #6b7280;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item.active {
+      color: #2563eb;
+    }
+
+    /* Modal Secret d'Édition */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: #161b26;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 24px;
+      width: 90%;
+      max-width: 380px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .modal-input {
+      width: 100%;
+      background: #0b0e14;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px;
+      color: #fff;
+      font-size: 16px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .modal-input:focus {
+      border-color: #2563eb;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .modal-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      background: #1f293d;
+      color: #9ca3af;
+    }
+
+    .btn-save {
+      background: #2563eb;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- Solde Principal -->
-  <div class="balance-card">
-    <div class="balance-title">SOLDE COMPTE D'INVESTISSEMENT</div>
-    <div class="balance-amount">$ 1,850,420.00 USD</div>
-    <span style="color: #26a69a;">▲ +18.4% (+ $288,000.00 ce mois)</span>
+  <div class="app-container">
+    
+    <!-- En-tête -->
+    <div class="header">
+      <div class="user-info">
+        <div class="avatar">JB</div>
+        <div>
+          <div class="welcome-text">Bon retour,</div>
+          <div class="user-name">John Lopez Silva</div>
+        </div>
+      </div>
+      <div class="icon-btn">
+        <i data-lucide="bell" size="20"></i>
+        <div class="badge-dot"></div>
+      </div>
+    </div>
+
+    <!-- Carte Virtuelle -->
+    <div class="card-container">
+      <div class="card-bg-decoration"></div>
+      <div class="card-top">
+        <span class="card-brand">PHANTOM VIP</span>
+        <i data-lucide="wifi" size="20"></i>
+      </div>
+      <div class="card-number">•••• •••• •••• 2002</div>
+      <div class="card-bottom">
+        <div>
+          <div class="card-balance-title">Carte Débit</div>
+          <div class="card-balance-val">€ 250 000,00</div>
+        </div>
+        <span style="font-size: 12px; opacity: 0.8;">10/28</span>
+      </div>
+    </div>
+
+    <!-- Solde Principal -->
+    <div class="balance-section">
+      <div class="balance-header">
+        <span class="label-title">SOLDE TOTAL COMPTE</span>
+        <button class="edit-dots-btn" onclick="openEditModal('main-balance-val')">
+          <i data-lucide="more-vertical" size="18"></i>
+        </button>
+      </div>
+      <div class="value-row">
+        <div class="main-balance" id="main-balance-val">€ 2 850 420,00</div>
+      </div>
+      <div class="percentage-badge">
+        <i data-lucide="trending-up" size="14"></i>
+        <span>+18.4% (+€288 000,00 ce mois)</span>
+      </div>
+    </div>
+
+    <!-- Actions Rapides -->
+    <div class="actions-grid">
+      <div class="action-item">
+        <div class="action-btn"><i data-lucide="arrow-up-right" size="22"></i></div>
+        <span class="action-label">Envoyer</span>
+      </div>
+      <div class="action-item">
+        <div class="action-btn"><i data-lucide="arrow-down-left" size="22"></i></div>
+        <span class="action-label">Recevoir</span>
+      </div>
+      <div class="action-item">
+        <div class="action-btn"><i data-lucide="plus" size="22"></i></div>
+        <span class="action-label">Ajouter</span>
+      </div>
+      <div class="action-item">
+        <div class="action-btn"><i data-lucide="sliders" size="22"></i></div>
+        <span class="action-label">Option</span>
+      </div>
+    </div>
+
+    <!-- Graphique TradingView Style -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <span class="section-title" style="margin: 0;">Performance</span>
+        <div class="timeframes">
+          <button class="tf-btn" onclick="updateChart('1D')">1D</button>
+          <button class="tf-btn" onclick="updateChart('1W')">1W</button>
+          <button class="tf-btn active" onclick="updateChart('1M')">1M</button>
+          <button class="tf-btn" onclick="updateChart('1Y')">1Y</button>
+          <button class="tf-btn" onclick="updateChart('ALL')">ALL</button>
+        </div>
+      </div>
+      <canvas id="tradingChart" height="160"></canvas>
+    </div>
+
+    <!-- Filtres / Pilules -->
+    <div class="pills-container">
+      <button class="pill-btn active">Tous</button>
+      <button class="pill-btn">Trading</button>
+      <button class="pill-btn">Shopping</button>
+      <button class="pill-btn">Nourriture</button>
+      <button class="pill-btn">Voyages</button>
+    </div>
+
+    <!-- Transactions -->
+    <div class="transactions-card">
+      <div class="section-title">
+        <span>Historique d'Opérations</span>
+        <i data-lucide="search" size="18" style="color: #6b7280; cursor: pointer;"></i>
+      </div>
+      <div class="tx-list">
+        
+        <div class="tx-item">
+          <div class="tx-left">
+            <div class="tx-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">
+              <i data-lucide="trending-up" size="20"></i>
+            </div>
+            <div class="tx-details">
+              <span class="tx-name">Gain Trading Crypto</span>
+              <span class="tx-date">Aujourd'hui, 14:20</span>
+            </div>
+          </div>
+          <div class="tx-right">
+            <span class="tx-amount positive" id="tx-1">+ €120 000,00</span>
+            <button class="edit-dots-btn" onclick="openEditModal('tx-1')">
+              <i data-lucide="more-vertical" size="16"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="tx-item">
+          <div class="tx-left">
+            <div class="tx-icon">
+              <i data-lucide="shopping-bag" size="20"></i>
+            </div>
+            <div class="tx-details">
+              <span class="tx-name">Achat Montre de Luxe</span>
+              <span class="tx-date">Hier, 18:45</span>
+            </div>
+          </div>
+          <div class="tx-right">
+            <span class="tx-amount negative" id="tx-2">- €45 000,00</span>
+            <button class="edit-dots-btn" onclick="openEditModal('tx-2')">
+              <i data-lucide="more-vertical" size="16"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="tx-item">
+          <div class="tx-left">
+            <div class="tx-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">
+              <i data-lucide="arrow-down-left" size="20"></i>
+            </div>
+            <div class="tx-details">
+              <span class="tx-name">Rendement Dividendes</span>
+              <span class="tx-date">02 Oct 2026</span>
+            </div>
+          </div>
+          <div class="tx-right">
+            <span class="tx-amount positive" id="tx-3">+ €314 000,00</span>
+            <button class="edit-dots-btn" onclick="openEditModal('tx-3')">
+              <i data-lucide="more-vertical" size="16"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="tx-item">
+          <div class="tx-left">
+            <div class="tx-icon">
+              <i data-lucide="coffee" size="20"></i>
+            </div>
+            <div class="tx-details">
+              <span class="tx-name">Starbucks Reserve</span>
+              <span class="tx-date">28 Sep 2026</span>
+            </div>
+          </div>
+          <div class="tx-right">
+            <span class="tx-amount negative" id="tx-4">- €25,50</span>
+            <button class="edit-dots-btn" onclick="openEditModal('tx-4')">
+              <i data-lucide="more-vertical" size="16"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
-  <!-- Graphique TradingView Style -->
-  <div class="chart-container">
-    <h3>Évolution du Solde</h3>
-    <canvas id="moneyChart" height="100"></canvas>
+  <!-- Bottom Nav Bar -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <i data-lucide="home" size="22"></i>
+    </div>
+    <div class="nav-item">
+      <i data-lucide="wallet" size="22"></i>
+    </div>
+    <div class="nav-item">
+      <i data-lucide="bar-chart-2" size="22"></i>
+    </div>
+    <div class="nav-item">
+      <i data-lucide="user" size="22"></i>
+    </div>
   </div>
 
-  <!-- Historique -->
-  <div class="history-card">
-    <h3>Historique des Transactions</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Type</th>
-          <th>Montant</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>06 Oct 2026</td>
-          <td>Gain Trading Crypto</td>
-          <td>Profit</td>
-          <td class="profit">+ $120,000.00</td>
-        </tr>
-        <tr>
-          <td>03 Oct 2026</td>
-          <td>Achat de matériel informatique</td>
-          <td>Achat</td>
-          <td class="loss">- $12,500.00</td>
-        </tr>
-        <tr>
-          <td>28 Sep 2026</td>
-          <td>Rendement des investissements</td>
-          <td>Virement</td>
-          <td class="profit">+ $180,500.00</td>
-        </tr>
-        <tr>
-          <td>15 Sep 2026</td>
-          <td>Paiement partenariat</td>
-          <td>Virement</td>
-          <td class="profit">+ $50,000.00</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Modal Secret pour éditer les valeurs -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <div class="modal-title">Modifier la valeur</div>
+      <input type="text" class="modal-input" id="modalInput" placeholder="Entrer la nouvelle valeur">
+      <div class="modal-actions">
+        <button class="modal-btn btn-cancel" onclick="closeEditModal()">Annuler</button>
+        <button class="modal-btn btn-save" onclick="saveEditedValue()">Sauvegarder</button>
+      </div>
+    </div>
   </div>
-</div>
 
-<script>
-  const ctx = document.getElementById('moneyChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct'],
-      datasets: [{
-        label: 'Solde ($)',
-        data: [950000, 1100000, 1350000, 1500000, 1662000, 1850420],
-        borderColor: '#26a69a',
-        backgroundColor: 'rgba(38, 166, 154, 0.15)',
-        fill: true,
-        tension: 0.3,
-        pointBackgroundColor: '#26a69a'
-      }]
-    },
-    options: {
-      scales: {
-        x: { grid: { color: '#2a2e39' }, ticks: { color: '#787b86' } },
-        y: { grid: { color: '#2a2e39' }, ticks: { color: '#787b86' } }
+  <script>
+    // Initialisation des icônes Lucide
+    lucide.createIcons();
+
+    // Configuration du Graphique TradingView Style
+    const ctx = document.getElementById('tradingChart').getContext('2d');
+    
+    // Gradient sous la courbe
+    const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+    gradient.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+    gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
+    let chartData = [1800000, 2100000, 1950000, 2400000, 2300000, 2850420];
+
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct'],
+        datasets: [{
+          data: chartData,
+          borderColor: '#10b981',
+          borderWidth: 2,
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.35,
+          pointRadius: 4,
+          pointBackgroundColor: '#10b981',
+          pointHoverRadius: 6
+        }]
       },
-      plugins: { legend: { display: false } }
-    }
-  });
-</script>
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#6b7280', font: { size: 10 } }
+          },
+          y: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#6b7280', font: { size: 10 } }
+          }
+        }
+      }
+    });
 
+    // Fonction pour changer les périodes du graphique
+    function updateChart(tf) {
+      document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      if(tf === '1D') chart.data.datasets[0].data = [2810000, 2830000, 2820000, 2850420];
+      else if(tf === '1W') chart.data.datasets[0].data = [2600000, 2750000, 2700000, 2850420];
+      else chart.data.datasets[0].data = [1800000, 2100000, 1950000, 2400000, 2300000, 2850420];
+      
+      chart.update();
+    }
+
+    // Logic du Modal Secret pour l'Édition Directe
+    let targetElementId = null;
+
+    function openEditModal(elementId) {
+      targetElementId = elementId;
+      const currentVal = document.getElementById(elementId).innerText;
+      document.getElementById('modalInput').value = currentVal;
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+      targetElementId = null;
+    }
+
+    function saveEditedValue() {
+      const newVal = document.getElementById('modalInput').value;
+      if (targetElementId && newVal) {
+        document.getElementById(targetElementId).innerText = newVal;
+      }
+      closeEditModal();
+    }
+  </script>
 </body>
 </html>
