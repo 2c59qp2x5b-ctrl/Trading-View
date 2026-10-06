@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Phantom Euro Bank</title>
   <!-- Polices et Icônes -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   
@@ -24,19 +24,128 @@
       display: flex;
       justify-content: center;
       min-height: 100vh;
-      padding-bottom: 90px;
+      padding-bottom: 80px;
     }
 
-    .app-container {
+    .app-viewport {
       width: 100%;
       max-width: 480px;
-      padding: 20px 16px;
+      position: relative;
+    }
+
+    /* Page d'authentification */
+    #auth-screen {
+      padding: 40px 24px;
       display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+      background: radial-gradient(circle at top right, #1d2432, #0b0e14);
+    }
+
+    .auth-brand {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .auth-logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+    }
+
+    .auth-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .auth-subtitle {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #161b26;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    .primary-btn {
+      width: 100%;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+
+    .primary-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .auth-toggle {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+
+    .auth-toggle span {
+      color: #3b82f6;
+      font-weight: 600;
+    }
+
+    /* Vues Principales */
+    .view-page {
+      display: none;
+      padding: 20px 16px;
       flex-direction: column;
       gap: 20px;
     }
 
-    /* En-tête Profil */
+    .view-page.active {
+      display: flex;
+    }
+
+    /* En-tête Dashboard */
     .header {
       display: flex;
       justify-content: space-between;
@@ -58,6 +167,7 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
+      color: #fff;
     }
 
     .welcome-text {
@@ -84,17 +194,7 @@
       position: relative;
     }
 
-    .badge-dot {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 8px;
-      height: 8px;
-      background-color: #2563eb;
-      border-radius: 50%;
-    }
-
-    /* Carte Bancaire Virtuelle */
+    /* Cartes Virtuelles */
     .card-container {
       background: linear-gradient(135deg, #1e40af, #4c1d95);
       border-radius: 24px;
@@ -103,17 +203,6 @@
       box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.15);
       overflow: hidden;
-    }
-
-    .card-bg-decoration {
-      position: absolute;
-      right: -20px;
-      bottom: -20px;
-      width: 150px;
-      height: 150px;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 50%;
-      pointer-events: none;
     }
 
     .card-top {
@@ -155,7 +244,7 @@
       font-weight: 700;
     }
 
-    /* Section Solde Principal */
+    /* Solde Principal */
     .balance-section {
       background: #161b26;
       border-radius: 20px;
@@ -175,34 +264,10 @@
       color: #9ca3af;
     }
 
-    .value-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
     .main-balance {
       font-size: 32px;
       font-weight: 800;
       letter-spacing: -0.5px;
-    }
-
-    .edit-dots-btn {
-      background: transparent;
-      border: none;
-      color: #6b7280;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-    }
-
-    .edit-dots-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
     }
 
     .percentage-badge {
@@ -218,7 +283,7 @@
       margin-top: 8px;
     }
 
-    /* Action Buttons */
+    /* Actions Rapides */
     .actions-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -256,7 +321,7 @@
       color: #9ca3af;
     }
 
-    /* Chart Section TradingView Style */
+    /* Graphique TradingView Style */
     .chart-card {
       background: #161b26;
       border-radius: 20px;
@@ -295,7 +360,7 @@
       color: #fff;
     }
 
-    /* Filter Pills */
+    /* Pilules / Filtres */
     .pills-container {
       display: flex;
       gap: 8px;
@@ -322,7 +387,7 @@
       border-color: #2563eb;
     }
 
-    /* Historique des Transactions */
+    /* Transactions */
     .transactions-card {
       background: #161b26;
       border-radius: 20px;
@@ -349,6 +414,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      cursor: pointer;
+      padding: 4px 0;
     }
 
     .tx-left {
@@ -397,8 +464,26 @@
     .tx-amount.positive { color: #10b981; }
     .tx-amount.negative { color: #ef4444; }
 
+    .edit-dots-btn {
+      background: transparent;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-dots-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
     /* Bottom Navigation Bar */
     .bottom-nav {
+      display: none;
       position: fixed;
       bottom: 0;
       left: 50%;
@@ -409,10 +494,13 @@
       backdrop-filter: blur(12px);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding: 12px 24px;
-      display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 100;
+    }
+
+    .bottom-nav.active {
+      display: flex;
     }
 
     .nav-item {
@@ -422,21 +510,22 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
+      transition: 0.2s;
     }
 
     .nav-item.active {
       color: #2563eb;
     }
 
-    /* Modal Secret d'Édition */
+    /* Modals & Overlays */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -454,7 +543,7 @@
     .modal-box {
       background: #161b26;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 24px;
       width: 90%;
       max-width: 380px;
@@ -463,34 +552,19 @@
     .modal-title {
       font-size: 18px;
       font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .modal-input {
-      width: 100%;
-      background: #0b0e14;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 12px;
-      color: #fff;
-      font-size: 16px;
       margin-bottom: 16px;
-      outline: none;
-    }
-
-    .modal-input:focus {
-      border-color: #2563eb;
     }
 
     .modal-actions {
       display: flex;
       gap: 10px;
       justify-content: flex-end;
+      margin-top: 16px;
     }
 
     .modal-btn {
-      padding: 10px 18px;
-      border-radius: 10px;
+      padding: 12px 20px;
+      border-radius: 12px;
       border: none;
       font-weight: 600;
       cursor: pointer;
@@ -505,297 +579,503 @@
       background: #2563eb;
       color: #fff;
     }
+
+    /* Fiche Détails Transaction Style Maquette */
+    .tx-detail-card {
+      background: #ffffff;
+      color: #111827;
+      border-radius: 24px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .tx-detail-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .tx-detail-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .tx-detail-type {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    .tx-detail-amount {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .tx-detail-map {
+      background: #f3f4f6;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+      font-size: 13px;
+      color: #374151;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    
-    <!-- En-tête -->
-    <div class="header">
-      <div class="user-info">
-        <div class="avatar">JB</div>
-        <div>
-          <div class="welcome-text">Bon retour,</div>
-          <div class="user-name">John Lopez Silva</div>
+  <div class="app-viewport">
+
+    <!-- ECRAN 0 : AUTHENTIFICATION (LOGIN / INSCRIPTION) -->
+    <div id="auth-screen">
+      <div class="auth-brand">
+        <div class="auth-logo">
+          <i data-lucide="shield-check" size="36"></i>
         </div>
+        <div class="auth-title">Phantom Euro Bank</div>
+        <div class="auth-subtitle">Accédez à votre espace bancaire sécurisé VIP</div>
       </div>
-      <div class="icon-btn">
-        <i data-lucide="bell" size="20"></i>
-        <div class="badge-dot"></div>
+
+      <div class="form-group">
+        <label class="form-label">Nom complet</label>
+        <input type="text" id="auth-name" class="form-input" placeholder="ex: John Lopez Silva" value="John Lopez Silva">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Adresse E-mail</label>
+        <input type="email" class="form-input" placeholder="john.silva@phantom.eu" value="john.silva@phantom.eu">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" placeholder="••••••••" value="12345678">
+      </div>
+
+      <button class="primary-btn" onclick="loginUser()">Accéder à mon compte</button>
+
+      <div class="auth-toggle">
+        Pas encore inscrit ? <span>Créer un compte</span>
       </div>
     </div>
 
-    <!-- Carte Virtuelle -->
-    <div class="card-container">
-      <div class="card-bg-decoration"></div>
-      <div class="card-top">
-        <span class="card-brand">PHANTOM VIP</span>
-        <i data-lucide="wifi" size="20"></i>
-      </div>
-      <div class="card-number">•••• •••• •••• 2002</div>
-      <div class="card-bottom">
-        <div>
-          <div class="card-balance-title">Carte Débit</div>
-          <div class="card-balance-val">€ 250 000,00</div>
+    <!-- PAGE 1 : ACCUEIL / DASHBOARD -->
+    <div id="page-home" class="view-page">
+      <div class="header">
+        <div class="user-info">
+          <div class="avatar" id="user-avatar">JS</div>
+          <div>
+            <div class="welcome-text">Bon retour,</div>
+            <div class="user-name" id="display-user-name">John Lopez Silva</div>
+          </div>
         </div>
-        <span style="font-size: 12px; opacity: 0.8;">10/28</span>
+        <div class="icon-btn">
+          <i data-lucide="bell" size="20"></i>
+        </div>
       </div>
-    </div>
 
-    <!-- Solde Principal -->
-    <div class="balance-section">
-      <div class="balance-header">
-        <span class="label-title">SOLDE TOTAL COMPTE</span>
-        <button class="edit-dots-btn" onclick="openEditModal('main-balance-val')">
-          <i data-lucide="more-vertical" size="18"></i>
-        </button>
+      <!-- Carte Virtuelle -->
+      <div class="card-container">
+        <div class="card-top">
+          <span class="card-brand">PHANTOM VIP</span>
+          <i data-lucide="wifi" size="20"></i>
+        </div>
+        <div class="card-number">•••• •••• •••• 2002</div>
+        <div class="card-bottom">
+          <div>
+            <div class="card-balance-title">Carte Débit</div>
+            <div class="card-balance-val">€ 250 000,00</div>
+          </div>
+          <span style="font-size: 12px; opacity: 0.8;">10/28</span>
+        </div>
       </div>
-      <div class="value-row">
+
+      <!-- Solde Principal -->
+      <div class="balance-section">
+        <div class="balance-header">
+          <span class="label-title">SOLDE TOTAL COMPTE</span>
+        </div>
         <div class="main-balance" id="main-balance-val">€ 2 850 420,00</div>
-      </div>
-      <div class="percentage-badge">
-        <i data-lucide="trending-up" size="14"></i>
-        <span>+18.4% (+€288 000,00 ce mois)</span>
-      </div>
-    </div>
-
-    <!-- Actions Rapides -->
-    <div class="actions-grid">
-      <div class="action-item">
-        <div class="action-btn"><i data-lucide="arrow-up-right" size="22"></i></div>
-        <span class="action-label">Envoyer</span>
-      </div>
-      <div class="action-item">
-        <div class="action-btn"><i data-lucide="arrow-down-left" size="22"></i></div>
-        <span class="action-label">Recevoir</span>
-      </div>
-      <div class="action-item">
-        <div class="action-btn"><i data-lucide="plus" size="22"></i></div>
-        <span class="action-label">Ajouter</span>
-      </div>
-      <div class="action-item">
-        <div class="action-btn"><i data-lucide="sliders" size="22"></i></div>
-        <span class="action-label">Option</span>
-      </div>
-    </div>
-
-    <!-- Graphique TradingView Style -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <span class="section-title" style="margin: 0;">Performance</span>
-        <div class="timeframes">
-          <button class="tf-btn" onclick="updateChart('1D')">1D</button>
-          <button class="tf-btn" onclick="updateChart('1W')">1W</button>
-          <button class="tf-btn active" onclick="updateChart('1M')">1M</button>
-          <button class="tf-btn" onclick="updateChart('1Y')">1Y</button>
-          <button class="tf-btn" onclick="updateChart('ALL')">ALL</button>
+        <div class="percentage-badge">
+          <i data-lucide="trending-up" size="14"></i>
+          <span>+18.4% (+€288 000,00 ce mois)</span>
         </div>
       </div>
-      <canvas id="tradingChart" height="160"></canvas>
-    </div>
 
-    <!-- Filtres / Pilules -->
-    <div class="pills-container">
-      <button class="pill-btn active">Tous</button>
-      <button class="pill-btn">Trading</button>
-      <button class="pill-btn">Shopping</button>
-      <button class="pill-btn">Nourriture</button>
-      <button class="pill-btn">Voyages</button>
-    </div>
-
-    <!-- Transactions -->
-    <div class="transactions-card">
-      <div class="section-title">
-        <span>Historique d'Opérations</span>
-        <i data-lucide="search" size="18" style="color: #6b7280; cursor: pointer;"></i>
+      <!-- Actions Rapides -->
+      <div class="actions-grid">
+        <div class="action-item" onclick="openActionModal('send')">
+          <div class="action-btn"><i data-lucide="arrow-up-right" size="22"></i></div>
+          <span class="action-label">Envoyer</span>
+        </div>
+        <div class="action-item" onclick="openActionModal('receive')">
+          <div class="action-btn"><i data-lucide="arrow-down-left" size="22"></i></div>
+          <span class="action-label">Recevoir</span>
+        </div>
+        <div class="action-item" onclick="openActionModal('add')">
+          <div class="action-btn"><i data-lucide="plus" size="22"></i></div>
+          <span class="action-label">Ajouter</span>
+        </div>
+        <div class="action-item" onclick="openActionModal('option')">
+          <div class="action-btn"><i data-lucide="sliders" size="22"></i></div>
+          <span class="action-label">Option</span>
+        </div>
       </div>
-      <div class="tx-list">
-        
-        <div class="tx-item">
-          <div class="tx-left">
-            <div class="tx-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">
-              <i data-lucide="trending-up" size="20"></i>
-            </div>
-            <div class="tx-details">
-              <span class="tx-name">Gain Trading Crypto</span>
-              <span class="tx-date">Aujourd'hui, 14:20</span>
-            </div>
-          </div>
-          <div class="tx-right">
-            <span class="tx-amount positive" id="tx-1">+ €120 000,00</span>
-            <button class="edit-dots-btn" onclick="openEditModal('tx-1')">
-              <i data-lucide="more-vertical" size="16"></i>
-            </button>
+
+      <!-- Aperçu Graphique -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="section-title" style="margin: 0;">Performance</span>
+          <div class="timeframes">
+            <button class="tf-btn" onclick="updateChart('1D')">1D</button>
+            <button class="tf-btn" onclick="updateChart('1W')">1W</button>
+            <button class="tf-btn active" onclick="updateChart('1M')">1M</button>
+            <button class="tf-btn" onclick="updateChart('1Y')">1Y</button>
+            <button class="tf-btn" onclick="updateChart('ALL')">ALL</button>
           </div>
         </div>
+        <canvas id="homeChart" height="150"></canvas>
+      </div>
 
-        <div class="tx-item">
-          <div class="tx-left">
-            <div class="tx-icon">
-              <i data-lucide="shopping-bag" size="20"></i>
-            </div>
-            <div class="tx-details">
-              <span class="tx-name">Achat Montre de Luxe</span>
-              <span class="tx-date">Hier, 18:45</span>
-            </div>
-          </div>
-          <div class="tx-right">
-            <span class="tx-amount negative" id="tx-2">- €45 000,00</span>
-            <button class="edit-dots-btn" onclick="openEditModal('tx-2')">
-              <i data-lucide="more-vertical" size="16"></i>
-            </button>
-          </div>
+      <!-- Filtres Pilules -->
+      <div class="pills-container">
+        <button class="pill-btn active" onclick="filterTransactions('all')">Tous</button>
+        <button class="pill-btn" onclick="filterTransactions('trading')">Trading</button>
+        <button class="pill-btn" onclick="filterTransactions('shopping')">Shopping</button>
+        <button class="pill-btn" onclick="filterTransactions('nourriture')">Nourriture</button>
+        <button class="pill-btn" onclick="filterTransactions('voyages')">Voyages</button>
+      </div>
+
+      <!-- Liste Transactions -->
+      <div class="transactions-card">
+        <div class="section-title">
+          <span>Transactions Récentes</span>
+          <i data-lucide="search" size="18" style="color: #6b7280;"></i>
         </div>
-
-        <div class="tx-item">
-          <div class="tx-left">
-            <div class="tx-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">
-              <i data-lucide="arrow-down-left" size="20"></i>
-            </div>
-            <div class="tx-details">
-              <span class="tx-name">Rendement Dividendes</span>
-              <span class="tx-date">02 Oct 2026</span>
-            </div>
-          </div>
-          <div class="tx-right">
-            <span class="tx-amount positive" id="tx-3">+ €314 000,00</span>
-            <button class="edit-dots-btn" onclick="openEditModal('tx-3')">
-              <i data-lucide="more-vertical" size="16"></i>
-            </button>
-          </div>
+        <div class="tx-list" id="tx-container">
+          <!-- Injecté dynamiquement par JS -->
         </div>
-
-        <div class="tx-item">
-          <div class="tx-left">
-            <div class="tx-icon">
-              <i data-lucide="coffee" size="20"></i>
-            </div>
-            <div class="tx-details">
-              <span class="tx-name">Starbucks Reserve</span>
-              <span class="tx-date">28 Sep 2026</span>
-            </div>
-          </div>
-          <div class="tx-right">
-            <span class="tx-amount negative" id="tx-4">- €25,50</span>
-            <button class="edit-dots-btn" onclick="openEditModal('tx-4')">
-              <i data-lucide="more-vertical" size="16"></i>
-            </button>
-          </div>
-        </div>
-
       </div>
     </div>
 
-  </div>
+    <!-- PAGE 2 : PORTEFEUILLE (WALLET) -->
+    <div id="page-wallet" class="view-page">
+      <div class="section-title" style="font-size: 22px;">Mes Portefeuilles & Cartes</div>
+      
+      <div class="card-container" style="background: linear-gradient(135deg, #059669, #10b981);">
+        <div class="card-top">
+          <span class="card-brand">CRYPTO & ASSETS</span>
+          <i data-lucide="bitcoin" size="20"></i>
+        </div>
+        <div class="card-number">0x71C...89A2</div>
+        <div class="card-bottom">
+          <div>
+            <div class="card-balance-title">Solde Crypto</div>
+            <div class="card-balance-val">€ 1 200 000,00</div>
+          </div>
+          <span style="font-size: 12px;">BTC / ETH</span>
+        </div>
+      </div>
 
-  <!-- Bottom Nav Bar -->
-  <div class="bottom-nav">
-    <div class="nav-item active">
-      <i data-lucide="home" size="22"></i>
-    </div>
-    <div class="nav-item">
-      <i data-lucide="wallet" size="22"></i>
-    </div>
-    <div class="nav-item">
-      <i data-lucide="bar-chart-2" size="22"></i>
-    </div>
-    <div class="nav-item">
-      <i data-lucide="user" size="22"></i>
-    </div>
-  </div>
+      <div class="balance-section">
+        <div class="section-title">Comptes Rattachés</div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+          <span>Compte Courant VIP</span>
+          <strong style="color: #10b981;">€ 1 650 420,00</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Coffre-Fort Épargne</span>
+          <strong style="color: #10b981;">€ 1 200 000,00</strong>
+        </div>
+      </div>
 
-  <!-- Modal Secret pour éditer les valeurs -->
-  <div class="modal-overlay" id="editModal">
-    <div class="modal-box">
-      <div class="modal-title">Modifier la valeur</div>
-      <input type="text" class="modal-input" id="modalInput" placeholder="Entrer la nouvelle valeur">
-      <div class="modal-actions">
-        <button class="modal-btn btn-cancel" onclick="closeEditModal()">Annuler</button>
-        <button class="modal-btn btn-save" onclick="saveEditedValue()">Sauvegarder</button>
+      <button class="primary-btn" onclick="openActionModal('add')">+ Ajouter un nouveau portefeuille</button>
+    </div>
+
+    <!-- PAGE 3 : GRAPHIQUE (TRADINGVIEW DETALLE) -->
+    <div id="page-chart" class="view-page">
+      <div class="section-title" style="font-size: 22px;">Analyse Financière</div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span style="font-weight: 700;">Évolution du Patrimoine</span>
+          <div class="timeframes">
+            <button class="tf-btn" onclick="updateChart('1D')">1D</button>
+            <button class="tf-btn" onclick="updateChart('1W')">1W</button>
+            <button class="tf-btn active" onclick="updateChart('1M')">1M</button>
+            <button class="tf-btn" onclick="updateChart('1Y')">1Y</button>
+            <button class="tf-btn" onclick="updateChart('ALL')">ALL</button>
+          </div>
+        </div>
+        <canvas id="fullChart" height="220"></canvas>
+      </div>
+
+      <div class="transactions-card">
+        <div class="section-title">Statistiques du Mois</div>
+        <p style="color: #9ca3af; font-size: 14px;">Gains totaux : <strong style="color: #10b981;">+€434 000,00</strong></p>
+        <p style="color: #9ca3af; font-size: 14px; margin-top: 8px;">Dépenses totales : <strong style="color: #ef4444;">-€45 025,50</strong></p>
       </div>
     </div>
+
+    <!-- PAGE 4 : COMPTE / PROFIL -->
+    <div id="page-account" class="view-page">
+      <div class="section-title" style="font-size: 22px;">Mon Profil</div>
+
+      <div class="balance-section" style="text-align: center;">
+        <div class="avatar" style="width: 70px; height: 70px; font-size: 24px; margin: 0 auto 12px;" id="profile-avatar">JS</div>
+        <h3 id="profile-name">John Lopez Silva</h3>
+        <p style="color: #3b82f6; font-size: 13px; font-weight: 600; margin-top: 4px;">Membre VIP Platinum</p>
+      </div>
+
+      <div class="transactions-card">
+        <div class="section-title">Paramètres du Compte</div>
+        <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer;" onclick="openActionModal('option')">
+          Modifier le Solde Principal
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          Sécurité & Biométrie (Activé)
+        </div>
+        <div style="padding: 12px 0; color: #ef4444; cursor: pointer;" onclick="logoutUser()">
+          Se déconnecter
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <div class="bottom-nav" id="main-nav">
+      <div class="nav-item active" onclick="switchTab('home')">
+        <i data-lucide="home" size="22"></i>
+      </div>
+      <div class="nav-item" onclick="switchTab('wallet')">
+        <i data-lucide="wallet" size="22"></i>
+      </div>
+      <div class="nav-item" onclick="switchTab('chart')">
+        <i data-lucide="bar-chart-2" size="22"></i>
+      </div>
+      <div class="nav-item" onclick="switchTab('account')">
+        <i data-lucide="user" size="22"></i>
+      </div>
+    </div>
+
+    <!-- MODAL D'ACTIONS (Envoyer / Recevoir / Ajouter / Option) -->
+    <div class="modal-overlay" id="actionModal">
+      <div class="modal-box">
+        <div class="modal-title" id="actionModalTitle">Action</div>
+        <div id="actionModalBody">
+          <label class="form-label">Montant (€)</label>
+          <input type="number" class="form-input" id="actionAmount" placeholder="ex: 50000">
+          <label class="form-label" style="margin-top: 12px;">Description / Intitulé</label>
+          <input type="text" class="form-input" id="actionDesc" placeholder="ex: Profit Trading / Achat">
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn btn-cancel" onclick="closeModal('actionModal')">Annuler</button>
+          <button class="modal-btn btn-save" onclick="executeAction()">Confirmer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE DÉTAILS TRANSACTION -->
+    <div class="modal-overlay" id="txDetailModal">
+      <div class="modal-box" style="padding: 0; background: transparent; border: none;">
+        <div class="tx-detail-card">
+          <div class="tx-detail-logo" id="detail-logo">
+            <i data-lucide="shopping-bag" size="28" style="color: #2563eb;"></i>
+          </div>
+          <div class="tx-detail-title" id="detail-title">Starbucks Coffee</div>
+          <div class="tx-detail-type" id="detail-type">Achat CB • Carte Débit</div>
+          <div class="tx-detail-amount" id="detail-amount">- €2,50</div>
+
+          <div class="tx-detail-map">
+            <i data-lucide="map-pin" size="20" style="color: #2563eb;"></i>
+            <div>
+              <strong>Avenue des Champs-Élysées</strong><br>
+              Paris, France • Hier 15:30
+            </div>
+          </div>
+          
+          <button class="primary-btn" style="margin-top: 16px;" onclick="closeModal('txDetailModal')">Fermer</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    // Initialisation des icônes Lucide
-    lucide.createIcons();
+    // Données de base des transactions
+    let transactions = [
+      { id: 1, name: "Gain Trading Crypto", date: "Aujourd'hui, 14:20", amount: 120000, type: "gain", category: "trading" },
+      { id: 2, name: "Achat Montre de Luxe", date: "Hier, 18:45", amount: -45000, type: "loss", category: "shopping" },
+      { id: 3, name: "Rendement Dividendes", date: "02 Oct 2026", amount: 314000, type: "gain", category: "trading" },
+      { id: 4, name: "Starbucks Reserve", date: "28 Sep 2026", amount: -25.50, type: "loss", category: "nourriture" }
+    ];
 
-    // Configuration du Graphique TradingView Style
-    const ctx = document.getElementById('tradingChart').getContext('2d');
-    
-    // Gradient sous la courbe
-    const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-    gradient.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
-    gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+    let currentBalance = 2850420.00;
+    let currentActionType = '';
 
-    let chartData = [1800000, 2100000, 1950000, 2400000, 2300000, 2850420];
+    // Initialisation
+    window.onload = () => {
+      lucide.createIcons();
+      renderTransactions(transactions);
+      initCharts();
+    };
 
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct'],
-        datasets: [{
-          data: chartData,
-          borderColor: '#10b981',
-          borderWidth: 2,
-          backgroundColor: gradient,
-          fill: true,
-          tension: 0.35,
-          pointRadius: 4,
-          pointBackgroundColor: '#10b981',
-          pointHoverRadius: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: '#6b7280', font: { size: 10 } }
-          },
-          y: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: '#6b7280', font: { size: 10 } }
+    // Authentification
+    function loginUser() {
+      const name = document.getElementById('auth-name').value || 'John Lopez Silva';
+      document.getElementById('display-user-name').innerText = name;
+      document.getElementById('profile-name').innerText = name;
+      
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+      document.getElementById('user-avatar').innerText = initials;
+      document.getElementById('profile-avatar').innerText = initials;
+
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('main-nav').classList.add('active');
+      switchTab('home');
+    }
+
+    function logoutUser() {
+      document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
+      document.getElementById('main-nav').classList.remove('active');
+      document.getElementById('auth-screen').style.display = 'flex';
+    }
+
+    // Swapping Tabs Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+      document.getElementById(`page-${tabId}`).classList.add('active');
+      
+      const navIndex = { 'home': 0, 'wallet': 1, 'chart': 2, 'account': 3 }[tabId];
+      document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+    }
+
+    // Affichage Transactions
+    function renderTransactions(list) {
+      const container = document.getElementById('tx-container');
+      container.innerHTML = '';
+
+      list.forEach(tx => {
+        const isPos = tx.amount > 0;
+        const formattedAmount = (isPos ? '+ €' : '- €') + Math.abs(tx.amount).toLocaleString('fr-FR', { minimumFractionDigits: 2 });
+        
+        container.innerHTML += `
+          <div class="tx-item" onclick="openTxDetail('${tx.name}', '${formattedAmount}', ${isPos})">
+            <div class="tx-left">
+              <div class="tx-icon" style="${isPos ? 'color: #10b981; background: rgba(16, 185, 129, 0.1);' : ''}">
+                <i data-lucide="${isPos ? 'trending-up' : 'shopping-bag'}" size="20"></i>
+              </div>
+              <div class="tx-details">
+                <span class="tx-name">${tx.name}</span>
+                <span class="tx-date">${tx.date}</span>
+              </div>
+            </div>
+            <div class="tx-right">
+              <span class="tx-amount ${isPos ? 'positive' : 'negative'}">${formattedAmount}</span>
+              <button class="edit-dots-btn" onclick="event.stopPropagation(); openEditTxModal(${tx.id})">
+                <i data-lucide="more-vertical" size="16"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    // Modal Actions (Envoyer / Recevoir / Ajouter / Option)
+    function openActionModal(type) {
+      currentActionType = type;
+      const title = document.getElementById('actionModalTitle');
+      document.getElementById('actionAmount').value = '';
+      document.getElementById('actionDesc').value = '';
+
+      if (type === 'send') title.innerText = 'Envoyer de l\'argent';
+      else if (type === 'receive') title.innerText = 'Recevoir de l\'argent';
+      else if (type === 'add') title.innerText = 'Ajouter de l\'argent au compte';
+      else if (type === 'option') title.innerText = 'Modifier le Solde Principal';
+
+      document.getElementById('actionModal').classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function executeAction() {
+      const val = parseFloat(document.getElementById('actionAmount').value) || 0;
+      const desc = document.getElementById('actionDesc').value || 'Mouvement de fond';
+
+      if (currentActionType === 'send') {
+        currentBalance -= val;
+        transactions.unshift({ id: Date.now(), name: desc, date: "Aujourd'hui", amount: -val, type: "loss", category: "shopping" });
+      } else if (currentActionType === 'receive' || currentActionType === 'add') {
+        currentBalance += val;
+        transactions.unshift({ id: Date.now(), name: desc, date: "Aujourd'hui", amount: val, type: "gain", category: "trading" });
+      } else if (currentActionType === 'option') {
+        currentBalance = val;
+      }
+
+      document.getElementById('main-balance-val').innerText = '€ ' + currentBalance.toLocaleString('fr-FR', { minimumFractionDigits: 2 });
+      renderTransactions(transactions);
+      closeModal('actionModal');
+    }
+
+    // Modal Détails Transaction
+    function openTxDetail(name, amount, isPos) {
+      document.getElementById('detail-title').innerText = name;
+      document.getElementById('detail-amount').innerText = amount;
+      document.getElementById('detail-amount').style.color = isPos ? '#10b981' : '#ef4444';
+      document.getElementById('txDetailModal').classList.add('active');
+    }
+
+    // Chart.js Setup
+    let mainChart;
+    function initCharts() {
+      const ctx = document.getElementById('homeChart').getContext('2d');
+      mainChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct'],
+          datasets: [{
+            data: [1800000, 2100000, 1950000, 2400000, 2300000, 2850420],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#6b7280' } },
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#6b7280' } }
           }
         }
-      }
-    });
+      });
+    }
 
-    // Fonction pour changer les périodes du graphique
     function updateChart(tf) {
       document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
-      
-      if(tf === '1D') chart.data.datasets[0].data = [2810000, 2830000, 2820000, 2850420];
-      else if(tf === '1W') chart.data.datasets[0].data = [2600000, 2750000, 2700000, 2850420];
-      else chart.data.datasets[0].data = [1800000, 2100000, 1950000, 2400000, 2300000, 2850420];
-      
-      chart.update();
+      if (tf === '1D') mainChart.data.datasets[0].data = [2810000, 2830000, 2850420];
+      else mainChart.data.datasets[0].data = [1800000, 2100000, 1950000, 2400000, 2300000, 2850420];
+      mainChart.update();
     }
 
-    // Logic du Modal Secret pour l'Édition Directe
-    let targetElementId = null;
-
-    function openEditModal(elementId) {
-      targetElementId = elementId;
-      const currentVal = document.getElementById(elementId).innerText;
-      document.getElementById('modalInput').value = currentVal;
-      document.getElementById('editModal').classList.add('active');
-    }
-
-    function closeEditModal() {
-      document.getElementById('editModal').classList.remove('active');
-      targetElementId = null;
-    }
-
-    function saveEditedValue() {
-      const newVal = document.getElementById('modalInput').value;
-      if (targetElementId && newVal) {
-        document.getElementById(targetElementId).innerText = newVal;
-      }
-      closeEditModal();
+    function filterTransactions(cat) {
+      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      if (cat === 'all') renderTransactions(transactions);
+      else renderTransactions(transactions.filter(t => t.category === cat));
     }
   </script>
 </body>
