@@ -1,1 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banque & Portfolio VIP</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #131722;
+      color: #d1d4dc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .balance-card {
+      background: #1e222d;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      border: 1px solid #2a2e39;
+    }
+    .balance-title { color: #787b86; font-size: 14px; letter-spacing: 1px; }
+    .balance-amount { font-size: 42px; font-weight: bold; color: #26a69a; margin: 10px 0; }
+    .chart-container {
+      background: #1e222d;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #2a2e39;
+    }
+    .history-card {
+      background: #1e222d;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #2a2e39;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 14px; text-align: left; border-bottom: 1px solid #2a2e39; }
+    th { color: #787b86; font-size: 13px; }
+    .profit { color: #26a69a; font-weight: bold; }
+    .loss { color: #ef5350; font-weight: bold; }
+  </style>
+</head>
+<body>
 
+<div class="container">
+  <!-- Solde Principal -->
+  <div class="balance-card">
+    <div class="balance-title">SOLDE COMPTE D'INVESTISSEMENT</div>
+    <div class="balance-amount">$ 1,850,420.00 USD</div>
+    <span style="color: #26a69a;">▲ +18.4% (+ $288,000.00 ce mois)</span>
+  </div>
+
+  <!-- Graphique TradingView Style -->
+  <div class="chart-container">
+    <h3>Évolution du Solde</h3>
+    <canvas id="moneyChart" height="100"></canvas>
+  </div>
+
+  <!-- Historique -->
+  <div class="history-card">
+    <h3>Historique des Transactions</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Montant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>06 Oct 2026</td>
+          <td>Gain Trading Crypto</td>
+          <td>Profit</td>
+          <td class="profit">+ $120,000.00</td>
+        </tr>
+        <tr>
+          <td>03 Oct 2026</td>
+          <td>Achat de matériel informatique</td>
+          <td>Achat</td>
+          <td class="loss">- $12,500.00</td>
+        </tr>
+        <tr>
+          <td>28 Sep 2026</td>
+          <td>Rendement des investissements</td>
+          <td>Virement</td>
+          <td class="profit">+ $180,500.00</td>
+        </tr>
+        <tr>
+          <td>15 Sep 2026</td>
+          <td>Paiement partenariat</td>
+          <td>Virement</td>
+          <td class="profit">+ $50,000.00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const ctx = document.getElementById('moneyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct'],
+      datasets: [{
+        label: 'Solde ($)',
+        data: [950000, 1100000, 1350000, 1500000, 1662000, 1850420],
+        borderColor: '#26a69a',
+        backgroundColor: 'rgba(38, 166, 154, 0.15)',
+        fill: true,
+        tension: 0.3,
+        pointBackgroundColor: '#26a69a'
+      }]
+    },
+    options: {
+      scales: {
+        x: { grid: { color: '#2a2e39' }, ticks: { color: '#787b86' } },
+        y: { grid: { color: '#2a2e39' }, ticks: { color: '#787b86' } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+</script>
+
+</body>
+</html>
