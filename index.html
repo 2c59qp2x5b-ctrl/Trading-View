@@ -1,717 +1,1302 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Phantom Euro Bank - Premium</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <style>
-    :root {
-      --bg-main: #0b0e14;
-      --bg-card: #161b26;
-      --bg-nav: rgba(15, 19, 29, 0.95);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --border: rgba(255, 255, 255, 0.08);
-      --success: #10b981;
-      --danger: #ef4444;
-      --card-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.4);
-    }
-
-    body.light-theme {
-      --bg-main: #f9fafb;
-      --bg-card: #ffffff;
-      --bg-nav: rgba(255, 255, 255, 0.95);
-      --text-main: #111827;
-      --text-muted: #6b7280;
-      --border: rgba(0, 0, 0, 0.1);
-      --card-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.15);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; transition: background-color 0.3s, color 0.3s; }
-
-    /* AUTH SCREEN SPLIT */
-    #auth-screen {
-      display: flex;
-      flex-direction: column;
-      width: 100vw;
-      min-height: 100vh;
-      background: var(--bg-main);
-      z-index: 2000;
-      position: fixed;
-      top: 0; left: 0;
-    }
-    @media(min-width: 768px) { #auth-screen { flex-direction: row; } }
-    .auth-left {
-      flex: 1;
-      background: linear-gradient(135deg, #2563eb, #4c1d95);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 40px;
-      color: white;
-    }
-    .auth-left h1 { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
-    .auth-left p { font-size: 1.1rem; opacity: 0.9; }
-    .auth-right {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 40px;
-      background: var(--bg-card);
-    }
-    .auth-form-container { max-width: 400px; width: 100%; margin: 0 auto; }
-    .social-logins { display: flex; gap: 12px; margin-top: 20px; justify-content: center; }
-    .social-btn {
-      width: 50px; height: 50px; border-radius: 50%;
-      background: var(--bg-main); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: var(--text-main); transition: transform 0.2s;
-    }
-    .social-btn:hover { transform: scale(1.1); }
-
-    .form-group { margin-bottom: 20px; }
-    .form-label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-    .form-input {
-      width: 100%; background: var(--bg-main); border: 1px solid var(--border);
-      border-radius: 14px; padding: 14px 16px; color: var(--text-main); font-size: 15px; outline: none;
-    }
-
-    .primary-btn {
-      width: 100%; background: var(--accent); color: #fff; border: none;
-      padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700;
-      cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-    }
-    .primary-btn:active { transform: scale(0.98); }
-
-    /* MAIN APP LAYOUT */
-    .app-viewport {
-      width: 100%; max-width: 480px; position: relative;
-      display: none; flex-direction: column; padding-bottom: 80px;
-    }
-    .view-page { display: none; padding: 20px 16px; flex-direction: column; gap: 20px; animation: slideUp 0.4s ease forwards; }
-    .view-page.active { display: flex; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* HEADER & TOOLS */
-    .header { display: flex; justify-content: space-between; align-items: center; }
-    .user-info { display: flex; align-items: center; gap: 12px; }
-    .avatar {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;
-    }
-    .header-tools { display: flex; gap: 8px; }
-    .icon-btn {
-      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main);
-      width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
-    }
-    .icon-btn:active { transform: scale(0.9); }
-
-    /* 3D CARD */
-    .card-scene {
-      perspective: 1000px; width: 100%; height: 200px; position: relative; z-index: 10;
-    }
-    .card-object {
-      width: 100%; height: 100%; position: relative; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; cursor: pointer;
-    }
-    .card-object.is-flipped { transform: rotateY(180deg); }
-    .card-face {
-      position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-      border-radius: 24px; padding: 22px; box-shadow: var(--card-shadow); display: flex; flex-direction: column; justify-content: space-between; color: white; border: 1px solid rgba(255,255,255,0.2);
-    }
-    .card-face-back { transform: rotateY(180deg); background: #111; }
-    
-    .btn-change-card {
-      position: absolute; top: 20px; right: 20px; width: 32px; height: 32px;
-      background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border-radius: 8px;
-      display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; border: 1px solid rgba(255,255,255,0.3); z-index: 20; transition: 0.2s;
-    }
-    .btn-change-card:hover { background: rgba(255,255,255,0.4); }
-
-    /* Card Themes */
-    .theme-phantom { background: linear-gradient(135deg, #1e40af, #4c1d95); color: #fff; }
-    .theme-amex { background: linear-gradient(135deg, #9ca3af, #e5e7eb); color: #111827; }
-    .theme-gold { background: linear-gradient(135deg, #ca8a04, #fef08a); color: #111827; }
-    .theme-black { background: linear-gradient(135deg, #111827, #374151); color: #fff; }
-
-    /* BALANCE SECTION */
-    .balance-section { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border); transition: 0.3s; }
-    .main-balance { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; transition: opacity 0.2s; }
-    .blur-text { filter: blur(8px); opacity: 0.5; user-select: none; }
-
-    /* ACTIONS */
-    .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .action-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
-    .action-btn { width: 54px; height: 54px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border); color: var(--accent); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-    .action-item:active .action-btn { transform: scale(0.9); background: var(--accent); color: #fff; }
-
-    /* PILLS & TRANSACTIONS */
-    .search-bar { width: 100%; background: var(--bg-main); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; color: var(--text-main); margin-bottom: 12px; outline: none; }
-    .pills-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
-    .pill-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-    .pill-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    
-    .tx-item { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 10px 0; border-bottom: 1px solid var(--border); }
-    .tx-left { display: flex; align-items: center; gap: 12px; }
-    .tx-icon { width: 42px; height: 42px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; color: var(--accent); }
-    .tx-amount.positive { color: var(--success); } .tx-amount.negative { color: var(--danger); font-weight: bold; }
-
-    /* VAULTS (COFFRES-FORTS) */
-    .vault-card { background: var(--bg-card); padding: 16px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 12px; }
-    .vault-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: 600; }
-    .progress-bg { width: 100%; height: 8px; background: var(--bg-main); border-radius: 4px; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 1s ease; }
-
-    /* CHARTS */
-    .chart-card { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border); }
-    .timeframes { display: flex; gap: 6px; background: var(--bg-main); padding: 4px; border-radius: 10px; }
-    .tf-btn { background: transparent; border: none; color: var(--text-muted); padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; }
-    .tf-btn.active { background: var(--accent); color: #fff; }
-
-    /* BOTTOM NAV */
-    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--bg-nav); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-    .nav-item { color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
-    .nav-item.active { color: var(--accent); transform: translateY(-2px); }
-
-    /* MODALS */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
-    .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 90%; max-width: 380px; transform: scale(0.9); transition: 0.3s; }
-    .modal-overlay.active .modal-box { transform: scale(1); }
-  </style>
-</head>
-<body>
-
-  <!-- AUTH SCREEN (SPLIT DESIGN) -->
-  <div id="auth-screen">
-    <div class="auth-left">
-      <h1>Let's make every day<br>Meaningful together.</h1>
-      <p>"Building meaningful experiences for a better financial future."</p>
-    </div>
-    <div class="auth-right">
-      <div class="auth-form-container">
-        <h2 style="font-size: 24px; margin-bottom: 24px; color: var(--text-main);">Connexion / Inscription</h2>
-        
-        <div class="form-group">
-          <label class="form-label">Nom complet</label>
-          <input type="text" id="auth-name" class="form-input" placeholder="ex: Ryan" value="Ryan">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" placeholder="contact@phantom.eu" value="contact@phantom.eu">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Mot de passe</label>
-          <input type="password" class="form-input" placeholder="••••••••" value="12345678">
-        </div>
-
-        <button class="primary-btn" onclick="loginUser()">Accéder au Compte</button>
-
-        <p style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted);">Ou continuer avec</p>
-        <div class="social-logins">
-          <div class="social-btn"><i data-lucide="chrome"></i></div>
-          <div class="social-btn"><i data-lucide="apple"></i></div>
-          <div class="social-btn"><i data-lucide="facebook"></i></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MAIN APP -->
-  <div class="app-viewport" id="main-app">
-
-    <!-- PAGE 1 : HOME -->
-    <div id="page-home" class="view-page">
-      <div class="header">
-        <div class="user-info">
-          <div class="avatar" id="user-avatar">R</div>
-          <div>
-            <div style="font-size: 12px; color: var(--text-muted);">Bon retour,</div>
-            <div style="font-weight: 700;" id="display-user-name">Ryan</div>
-          </div>
-        </div>
-        <div class="header-tools">
-          <div class="icon-btn" onclick="cycleCurrency()"><i data-lucide="coins" size="18"></i></div>
-          <div class="icon-btn" onclick="toggleTheme()"><i data-lucide="moon" size="18" id="theme-icon"></i></div>
-          <div class="icon-btn" onclick="toggleBalance()"><i data-lucide="eye" size="18" id="eye-icon"></i></div>
-        </div>
-      </div>
-
-      <!-- 3D CARD COMPONENT -->
-      <div class="card-scene">
-        <div class="card-object" id="main-card" onclick="toggleCardFlip()">
-          <!-- FRONT -->
-          <div class="card-face theme-phantom" id="card-front">
-            <div class="btn-change-card" onclick="changeCardStyle(event)"><i data-lucide="plus" size="18"></i></div>
-            <div style="display: flex; justify-content: space-between;">
-              <strong style="letter-spacing: 1px;" id="card-brand-text">PHANTOM VIP</strong>
-              <i data-lucide="wifi" size="20"></i>
-            </div>
-            <div style="font-size: 18px; letter-spacing: 2px; font-family: monospace;">•••• •••• •••• 2026</div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-              <div>
-                <div style="font-size: 11px; opacity: 0.7;">Solde Carte</div>
-                <div style="font-size: 20px; font-weight: 700;" class="display-balance">2 850 420,00</div>
-              </div>
-              <span style="font-size: 12px; opacity: 0.8;">10/28</span>
-            </div>
-          </div>
-          <!-- BACK -->
-          <div class="card-face card-face-back theme-phantom" id="card-back">
-            <div style="width: 100%; height: 40px; background: #000; margin-left: -22px; width: calc(100% + 44px); margin-top: 10px;"></div>
-            <div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;">
-              <div style="flex: 1; background: #fff; color: #000; padding: 10px; border-radius: 4px; text-align: right; font-family: monospace; font-weight: bold;">
-                CVV: 842
-              </div>
-              <button style="padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;" onclick="event.stopPropagation(); alert('Numéro copié !');">Copier</button>
-            </div>
-            <div style="font-size: 10px; text-align: center; opacity: 0.5; margin-top: auto;">Support: support@phantom.eu</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- BALANCE -->
-      <div class="balance-section">
-        <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 5px;">Solde Total</div>
-        <div class="main-balance display-balance" id="main-balance-val">2 850 420,00</div>
-        <div style="display: inline-flex; align-items: center; gap: 4px; background: rgba(16, 185, 129, 0.15); color: var(--success); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 8px;">
-          <i data-lucide="trending-up" size="14"></i> +18.4% ce mois
-        </div>
-      </div>
-
-      <!-- ACTIONS -->
-      <div class="actions-grid">
-        <div class="action-item" onclick="openActionModal('send')">
-          <div class="action-btn"><i data-lucide="arrow-up-right"></i></div>
-          <span style="font-size: 12px; color: var(--text-muted);">Envoyer</span>
-        </div>
-        <div class="action-item" onclick="openActionModal('receive')">
-          <div class="action-btn"><i data-lucide="arrow-down-left"></i></div>
-          <span style="font-size: 12px; color: var(--text-muted);">Recevoir</span>
-        </div>
-        <div class="action-item" onclick="openActionModal('add')">
-          <div class="action-btn"><i data-lucide="plus"></i></div>
-          <span style="font-size: 12px; color: var(--text-muted);">Ajouter</span>
-        </div>
-        <div class="action-item" onclick="openActionModal('option')">
-          <div class="action-btn"><i data-lucide="sliders"></i></div>
-          <span style="font-size: 12px; color: var(--text-muted);">Option</span>
-        </div>
-      </div>
-
-      <!-- TRANSACTIONS -->
-      <div class="balance-section">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: bold;">
-          Transactions
-        </div>
-        <input type="text" class="search-bar" placeholder="Rechercher (ex: Starbucks, Crypto...)" id="tx-search" onkeyup="searchTx()">
-        <div class="pills-container">
-          <button class="pill-btn active" onclick="filterTx('all', event)">Tous</button>
-          <button class="pill-btn" onclick="filterTx('Trading', event)">Trading</button>
-          <button class="pill-btn" onclick="filterTx('Shopping', event)">Shopping</button>
-          <button class="pill-btn" onclick="filterTx('Nourriture', event)">Nourriture</button>
-        </div>
-        <div id="tx-container" style="display: flex; flex-direction: column; margin-top: 12px;"></div>
-      </div>
-    </div>
-
-    <!-- PAGE 2 : WALLET (VAULTS & CARDS) -->
-    <div id="page-wallet" class="view-page">
-      <h2 style="font-size: 22px;">Coffres-Forts (Vaults)</h2>
-      
-      <div class="vault-card">
-        <div class="vault-header"><span>Voyage Japon 2027</span> <span class="display-balance">4 500,00</span></div>
-        <div class="progress-bg"><div class="progress-fill" style="width: 45%;"></div></div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: right;">Objectif: 10 000</div>
-      </div>
-      
-      <div class="vault-card">
-        <div class="vault-header"><span>Épargne Crypto</span> <span class="display-balance">120 000,00</span></div>
-        <div class="progress-bg"><div class="progress-fill" style="width: 80%; background: #f59e0b;"></div></div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: right;">Objectif: 150 000</div>
-      </div>
-
-      <h2 style="font-size: 22px; margin-top: 20px;">Commander une carte physique</h2>
-      <div class="balance-section" style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <button class="pill-btn active" style="flex: 1;">Noir Mat</button>
-        <button class="pill-btn" style="flex: 1;">Or VIP</button>
-        <button class="pill-btn" style="flex: 1;">Métal Lourd</button>
-        <button class="primary-btn" style="margin-top: 10px;" onclick="alert('Commande validée !')">Commander</button>
-      </div>
-    </div>
-
-    <!-- PAGE 3 : CHART (ANALYTICS) -->
-    <div id="page-chart" class="view-page">
-      <h2 style="font-size: 22px;">Analytiques</h2>
-      
-      <div class="chart-card">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-          <span style="font-weight: 700;">Évolution</span>
-          <div class="timeframes">
-            <button class="tf-btn" onclick="updateChart('1D', event)">1D</button>
-            <button class="tf-btn active" onclick="updateChart('1M', event)">1M</button>
-            <button class="tf-btn" onclick="updateChart('ALL', event)">ALL</button>
-          </div>
-        </div>
-        <canvas id="lineChart" height="180"></canvas>
-      </div>
-
-      <div class="chart-card" style="margin-top: 10px;">
-        <span style="font-weight: 700; display: block; margin-bottom: 16px;">Répartition Budget Mensuel</span>
-        <canvas id="doughnutChart" height="200"></canvas>
-      </div>
-    </div>
-
-    <!-- PAGE 4 : ACCOUNT -->
-    <div id="page-account" class="view-page">
-      <h2 style="font-size: 22px;">Mon Profil</h2>
-      <div class="balance-section" style="text-align: center;">
-        <div class="avatar" style="width: 70px; height: 70px; font-size: 24px; margin: 0 auto 12px;" id="profile-avatar">R</div>
-        <h3 id="profile-name">Ryan</h3>
-        <p style="color: var(--accent); font-size: 13px; font-weight: 600;">Membre VIP Platinum</p>
-      </div>
-
-      <div class="balance-section">
-        <h3 style="font-size: 16px; margin-bottom: 16px;">Sécurité Carte</h3>
-        
-        <div style="margin-bottom: 20px;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px;">Plafond Paiement</span>
-            <span style="font-weight: bold;">50 000 / mois</span>
-          </div>
-          <input type="range" min="1000" max="100000" value="50000" style="width: 100%; accent-color: var(--accent);">
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-top: 1px solid var(--border);">
-          <span>Bloquer la carte</span>
-          <input type="checkbox" style="width: 40px; height: 20px; accent-color: var(--danger);">
-        </div>
-      </div>
-
-      <button class="primary-btn" style="background: var(--bg-card); color: var(--danger); border: 1px solid var(--border);" onclick="logoutUser()">Se déconnecter</button>
-    </div>
-
-    <!-- BOTTOM NAV -->
-    <div class="bottom-nav">
-      <div class="nav-item active" onclick="switchTab('home', 0)"><i data-lucide="home"></i></div>
-      <div class="nav-item" onclick="switchTab('wallet', 1)"><i data-lucide="wallet"></i></div>
-      <div class="nav-item" onclick="switchTab('chart', 2)"><i data-lucide="pie-chart"></i></div>
-      <div class="nav-item" onclick="switchTab('account', 3)"><i data-lucide="user"></i></div>
-    </div>
-
-    <!-- MODAL ACTIONS -->
-    <div class="modal-overlay" id="actionModal">
-      <div class="modal-box">
-        <h3 id="actionModalTitle" style="margin-bottom: 16px;">Action</h3>
-        <input type="number" id="actionAmount" class="form-input" placeholder="Montant" style="margin-bottom: 12px;">
-        <input type="text" id="actionDesc" class="form-input" placeholder="Description (ex: Achat Web)">
-        <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;">
-          <button style="padding: 10px 16px; border-radius: 12px; background: var(--bg-main); color: var(--text-muted); border: none;" onclick="closeModal('actionModal')">Annuler</button>
-          <button style="padding: 10px 16px; border-radius: 12px; background: var(--accent); color: white; border: none;" onclick="executeAction()">Confirmer</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL TRANSACTION DETAILS -->
-    <div class="modal-overlay" id="txDetailModal">
-      <div class="modal-box" style="text-align: center;">
-        <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--bg-main); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--accent);">
-          <i data-lucide="file-text" size="28"></i>
-        </div>
-        <h2 id="detail-title">Transaction</h2>
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">CB • Carte Débit</p>
-        <h1 id="detail-amount" style="margin-bottom: 20px;">0,00</h1>
-        
-        <button class="primary-btn" onclick="alert('Téléchargement du reçu PDF en cours...');">Télécharger le Reçu</button>
-        <button style="width: 100%; padding: 12px; margin-top: 8px; background: transparent; border: none; color: var(--text-muted);" onclick="closeModal('txDetailModal')">Fermer</button>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    // ETAT GLOBAL
-    let baseBalanceEuro = 2850420.00;
-    let currentBalance = baseBalanceEuro;
-    let isHidden = false;
-    let currencyIndex = 0;
-    const currencies = [
-      { sym: '€', rate: 1, loc: 'fr-FR' },
-      { sym: '$', rate: 1.08, loc: 'en-US' },
-      { sym: '£', rate: 0.85, loc: 'en-GB' },
-      { sym: '₿', rate: 0.000015, loc: 'en-US' }
-    ];
-    let txList = [
-      { id: 1, name: "Gain Trading Crypto", date: "Auj, 14:20", amount: 120000, cat: "Trading" },
-      { id: 2, name: "Achat Montre Luxe", date: "Hier", amount: -45000, cat: "Shopping" },
-      { id: 3, name: "Starbucks Reserve", date: "28 Sep", amount: -25.5, cat: "Nourriture" }
-    ];
-    let currentFilter = 'all';
-
-    // INIT
-    lucide.createIcons();
-    initCharts();
-
-    // AUTH
-    function loginUser() {
-      const name = document.getElementById('auth-name').value || 'Client';
-      const initial = name.charAt(0).toUpperCase();
-      document.getElementById('display-user-name').innerText = name;
-      document.getElementById('profile-name').innerText = name;
-      document.getElementById('user-avatar').innerText = initial;
-      document.getElementById('profile-avatar').innerText = initial;
-      
-      document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('main-app').style.display = 'flex';
-      renderTx();
-      updateUIBalances(currentBalance, currentBalance);
-    }
-    function logoutUser() {
-      document.getElementById('auth-screen').style.display = 'flex';
-      document.getElementById('main-app').style.display = 'none';
-    }
-
-    // NAVIGATION
-    function switchTab(page, index) {
-      document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      document.getElementById('page-' + page).classList.add('active');
-      document.querySelectorAll('.nav-item')[index].classList.add('active');
-    }
-
-    // THEME & EYE & CURRENCY
-    function toggleTheme() {
-      document.body.classList.toggle('light-theme');
-      const icon = document.body.classList.contains('light-theme') ? 'sun' : 'moon';
-      document.getElementById('theme-icon').setAttribute('data-lucide', icon);
-      lucide.createIcons();
-      updateChartColors();
-    }
-
-    function toggleBalance() {
-      isHidden = !isHidden;
-      const icon = isHidden ? 'eye-off' : 'eye';
-      document.getElementById('eye-icon').setAttribute('data-lucide', icon);
-      lucide.createIcons();
-      
-      document.querySelectorAll('.display-balance').forEach(el => {
-        if(isHidden) {
-          el.setAttribute('data-val', el.innerText);
-          el.innerText = '•••••••';
-          el.classList.add('blur-text');
-        } else {
-          el.innerText = el.getAttribute('data-val');
-          el.classList.remove('blur-text');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Euro Bank - Premium Digital Banking</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        phantom: {
+                            50: '#f4f4f6',
+                            100: '#e5e6eb',
+                            800: '#14151f',
+                            900: '#0b0c13',
+                            950: '#05060a',
+                            gold: '#d4af37',
+                            goldLight: '#f3e5ab',
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
         }
-      });
-    }
-
-    function cycleCurrency() {
-      if(isHidden) toggleBalance(); // Afficher avant de changer
-      currencyIndex = (currencyIndex + 1) % currencies.length;
-      updateUIBalances(baseBalanceEuro, baseBalanceEuro);
-    }
-
-    // FORMATAGE & ANIMATION SOLDE
-    function formatMoney(val) {
-      const c = currencies[currencyIndex];
-      const converted = val * c.rate;
-      const decimals = c.sym === '₿' ? 4 : 2;
-      return c.sym + ' ' + converted.toLocaleString(c.loc, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-    }
-
-    function animateValue(startVal, endVal, duration) {
-      if(isHidden) toggleBalance();
-      const els = document.querySelectorAll('.display-balance');
-      let startTimestamp = null;
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const current = startVal + progress * (endVal - startVal);
-        els.forEach(el => el.innerText = formatMoney(current));
-        if (progress < 1) window.requestAnimationFrame(step);
-      };
-      window.requestAnimationFrame(step);
-    }
-
-    function updateUIBalances(oldVal, newVal) {
-      baseBalanceEuro = newVal;
-      currentBalance = newVal;
-      if (oldVal !== newVal) {
-        animateValue(oldVal, newVal, 1000);
-      } else {
-        document.querySelectorAll('.display-balance').forEach(el => el.innerText = formatMoney(newVal));
-      }
-      renderTx();
-    }
-
-    // 3D CARD
-    function toggleCardFlip() {
-      document.getElementById('main-card').classList.toggle('is-flipped');
-    }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    let cardThemes = [
-      { c: 'theme-phantom', n: 'PHANTOM VIP' },
-      { c: 'theme-amex', n: 'PLATINUM CARD' },
-      { c: 'theme-gold', n: 'VISA GOLD' },
-      { c: 'theme-black', n: 'BLACK METAL' }
-    ];
-    let themeIdx = 0;
-    
-    function changeCardStyle(e) {
-      e.stopPropagation();
-      const front = document.getElementById('card-front');
-      const back = document.getElementById('card-back');
-      
-      front.classList.remove(cardThemes[themeIdx].c);
-      back.classList.remove(cardThemes[themeIdx].c);
-      
-      themeIdx = (themeIdx + 1) % cardThemes.length;
-      
-      front.classList.add(cardThemes[themeIdx].c);
-      back.classList.add(cardThemes[themeIdx].c);
-      document.getElementById('card-brand-text').innerText = cardThemes[themeIdx].n;
-    }
+    <!-- Custom CSS Styles -->
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #05060a;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
 
-    // TRANSACTIONS
-    function renderTx() {
-      const container = document.getElementById('tx-container');
-      container.innerHTML = '';
-      
-      let filtered = txList;
-      if(currentFilter !== 'all') {
-        filtered = txList.filter(t => t.cat === currentFilter);
-      }
-      
-      const search = document.getElementById('tx-search').value.toLowerCase();
-      if(search) {
-        filtered = filtered.filter(t => t.name.toLowerCase().includes(search));
-      }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0c13;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27273a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b3b54;
+        }
 
-      filtered.forEach(tx => {
-        const isPos = tx.amount > 0;
-        const icon = isPos ? 'trending-up' : 'shopping-bag';
-        const fAmt = (isPos ? '+' : '') + formatMoney(tx.amount);
-        
-        container.innerHTML += `
-          <div class="tx-item" onclick="openTxDetail('${tx.name}', '${fAmt}', ${isPos})">
-            <div class="tx-left">
-              <div class="tx-icon" style="${isPos ? 'color: var(--success); background: rgba(16, 185, 129, 0.1);' : ''}">
-                <i data-lucide="${icon}"></i>
-              </div>
-              <div>
-                <div style="font-weight: 600; font-size: 14px;">${tx.name}</div>
-                <div style="font-size: 12px; color: var(--text-muted);">${tx.date} • ${tx.cat}</div>
-              </div>
+        /* Glassmorphism styling */
+        .glass-card {
+            background: rgba(18, 20, 32, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card-interactive {
+            background: rgba(18, 20, 32, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card-interactive:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        .glass-modal {
+            background: rgba(11, 12, 19, 0.9);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Physical Card Material Styles */
+        .finish-matte {
+            background: linear-gradient(135deg, #181924 0%, #0c0d14 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .finish-gold {
+            background: linear-gradient(135deg, #382b0e 0%, #1a1303 50%, #4a3810 100%);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        .finish-metal {
+            background: linear-gradient(135deg, #334155 0%, #0f172a 50%, #1e293b 100%);
+            border: 1px solid rgba(203, 213, 225, 0.3);
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Social Button Image Precision Cropping */
+        .social-avatar-btn img {
+            object-fit: cover;
+            object-position: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Transitions for Container Layout Scaling */
+        .app-view-container {
+            transition: max-width 0.4s ease-in-out, padding 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-phantom-950 text-slate-100 flex flex-col items-center justify-center p-2 sm:p-4">
+
+    <div id="toastNotification" class="fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl glass-card text-white shadow-2xl transition-all duration-300 transform translate-x-full opacity-0">
+        <div id="toastIcon" class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <p id="toastTitle" class="font-semibold text-sm">Notification</p>
+            <p id="toastMessage" class="text-xs text-slate-400">Action completed successfully.</p>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER (Mobile 480px default vs Expanded Wide View) -->
+    <div id="appContainer" class="app-view-container w-full max-w-[480px] bg-phantom-900 border border-slate-800/80 rounded-[32px] shadow-2xl overflow-hidden min-h-[850px] flex flex-col relative transition-all duration-300">
+
+        <!-- =================================================================== -->
+        <!-- =================================================================== -->
+        <section id="authSection" class="w-full h-full flex-1 flex flex-col justify-between p-6 sm:p-8 relative">
+            <div class="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-phantom-950/80 pointer-events-none"></div>
+
+            <!-- Top Branding Banner -->
+            <div class="relative z-10 text-center mt-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-phantom-gold to-yellow-200 text-phantom-950 text-2xl font-black shadow-lg shadow-phantom-gold/20 mb-4">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Phantom <span class="text-phantom-gold">Euro Bank</span></h1>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Next-Generation Wealth & Lifestyle Banking</p>
             </div>
-            <div class="tx-amount ${isPos ? 'positive' : 'negative'}">${fAmt}</div>
-          </div>
-        `;
-      });
-      lucide.createIcons();
-    }
 
-    function filterTx(cat, event) {
-      document.querySelectorAll('.pills-container .pill-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      currentFilter = cat;
-      renderTx();
-    }
+            <!-- Auth Form & Toggle -->
+            <div class="relative z-10 my-8 glass-card p-6 rounded-3xl">
+                <div class="flex bg-phantom-950/60 p-1 rounded-2xl mb-6 border border-slate-800">
+                    <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-phantom-gold text-phantom-950 transition-all shadow-md">Sign In</button>
+                    <button id="tabSignupBtn" onclick="switchAuthTab('signup')" class="flex-1 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-all">Create Account</button>
+                </div>
 
-    function searchTx() { renderTx(); }
+                <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                    <div id="nameField" class="hidden">
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">FULL NAME</label>
+                        <div class="relative">
+                            <i class="fa-regular fa-user absolute left-4 top-3.5 text-slate-500 text-sm"></i>
+                            <input type="text" id="authName" placeholder="Alex Morgan" class="w-full bg-phantom-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-phantom-gold transition-colors">
+                        </div>
+                    </div>
 
-    // MODALS ACTIONS
-    let currentAction = '';
-    function openActionModal(type) {
-      currentAction = type;
-      const title = document.getElementById('actionModalTitle');
-      document.getElementById('actionAmount').value = '';
-      document.getElementById('actionDesc').value = '';
-      if(type==='send') title.innerText = 'Envoyer de l\'argent';
-      if(type==='receive') title.innerText = 'Recevoir de l\'argent';
-      if(type==='add') title.innerText = 'Ajouter des fonds';
-      if(type==='option') title.innerText = 'Modifier Solde (Cheat)';
-      document.getElementById('actionModal').classList.add('active');
-    }
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">EMAIL ADDRESS</label>
+                        <div class="relative">
+                            <i class="fa-regular fa-envelope absolute left-4 top-3.5 text-slate-500 text-sm"></i>
+                            <input type="email" id="authEmail" required value="alex.morgan@phantom.com" placeholder="name@domain.com" class="w-full bg-phantom-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-phantom-gold transition-colors">
+                        </div>
+                    </div>
 
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">SECURITY PASSCODE</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-500 text-sm"></i>
+                            <input type="password" id="authPassword" required value="••••••••" placeholder="Enter password" class="w-full bg-phantom-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-phantom-gold transition-colors">
+                        </div>
+                    </div>
 
-    function executeAction() {
-      const valInput = parseFloat(document.getElementById('actionAmount').value) || 0;
-      // Convertir la valeur saisie (selon la devise actuelle) vers l'euro pour le stockage
-      const valEuro = valInput / currencies[currencyIndex].rate; 
-      const desc = document.getElementById('actionDesc').value || 'Transaction';
-      let old = baseBalanceEuro;
-      let newB = old;
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-phantom-gold to-yellow-500 hover:from-yellow-400 hover:to-phantom-gold text-phantom-950 font-bold rounded-xl text-xs tracking-wider uppercase transition-all shadow-lg shadow-phantom-gold/20 flex items-center justify-center gap-2 mt-2">
+                        <span>Access Terminal</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
 
-      if(currentAction==='send') {
-        newB -= valEuro;
-        txList.unshift({ id: Date.now(), name: desc, date: "À l'instant", amount: -valEuro, cat: "Shopping" });
-      } else if(currentAction==='receive' || currentAction==='add') {
-        newB += valEuro;
-        txList.unshift({ id: Date.now(), name: desc, date: "À l'instant", amount: valEuro, cat: "Trading" });
-      } else if(currentAction==='option') {
-        newB = valEuro;
-      }
-      
-      updateUIBalances(old, newB);
-      closeModal('actionModal');
-    }
+                <div class="mt-6 pt-5 border-t border-slate-800/80 text-center">
+                    <p class="text-[11px] font-medium text-slate-400 mb-4">Or connect directly via Social Profiles</p>
+                    <div class="flex items-center justify-center gap-6">
+                        <!-- TikTok Button -->
+                        <a href="https://www.tiktok.com/@qx4.dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-avatar-btn group flex flex-col items-center gap-2 transition-transform hover:scale-105">
+                            <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-slate-700 group-hover:border-phantom-cyan shadow-lg transition-all bg-phantom-950 flex items-center justify-center p-0.5">
+                                <img src="tiktok.webp" alt="TikTok" class="rounded-full" onerror="this.onerror=null; this.src='https://placehold.co/100x100/0b0c13/ffffff?text=TikTok';">
+                            </div>
+                            <span class="text-[11px] text-slate-400 group-hover:text-phantom-cyan font-semibold">TikTok</span>
+                        </a>
 
-    function openTxDetail(name, amt, isPos) {
-      document.getElementById('detail-title').innerText = name;
-      document.getElementById('detail-amount').innerText = amt;
-      document.getElementById('detail-amount').style.color = isPos ? 'var(--success)' : 'var(--danger)';
-      document.getElementById('txDetailModal').classList.add('active');
-    }
+                        <!-- Instagram Button -->
+                        <a href="https://www.instagram.com/qx.dev95?stkn=N2d6bXh3MHdnank3&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-avatar-btn group flex flex-col items-center gap-2 transition-transform hover:scale-105">
+                            <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-slate-700 group-hover:border-pink-500 shadow-lg transition-all bg-phantom-950 flex items-center justify-center p-0.5">
+                                <img src="instagram.webp" alt="Instagram" class="rounded-full" onerror="this.onerror=null; this.src='https://placehold.co/100x100/0b0c13/ffffff?text=Instagram';">
+                            </div>
+                            <span class="text-[11px] text-slate-400 group-hover:text-pink-400 font-semibold">Instagram</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    // CHARTS
-    let lineC, doughC;
-    function initCharts() {
-      Chart.defaults.color = '#9ca3af';
-      Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
-      
-      const ctx1 = document.getElementById('lineChart').getContext('2d');
-      lineC = new Chart(ctx1, {
-        type: 'line',
-        data: {
-          labels: ['S1', 'S2', 'S3', 'S4'],
-          datasets: [{ data: [1.8, 2.1, 2.4, 2.8], borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', fill: true, tension: 0.4 }]
-        },
-        options: { plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(150,150,150,0.1)'}}} }
-      });
+            <!-- Footer terms info -->
+            <p class="relative z-10 text-center text-[10px] text-slate-600">
+                Encrypted with 256-Bit Quantum Protocol. Phantom Euro Bank © 2026.
+            </p>
+        </section>
 
-      const ctx2 = document.getElementById('doughnutChart').getContext('2d');
-      doughC = new Chart(ctx2, {
-        type: 'doughnut',
-        data: {
-          labels: ['Trading', 'Shopping', 'Voyages', 'Nourriture'],
-          datasets: [{ data: [45, 30, 15, 10], backgroundColor: ['#2563eb', '#8b5cf6', '#10b981', '#f59e0b'], borderWidth: 0 }]
-        },
-        options: { cutout: '75%', plugins: { legend: { position: 'right' } } }
-      });
-    }
+        <!-- =================================================================== -->
+        <!-- =================================================================== -->
+        <main id="mainAppSection" class="hidden w-full flex-1 flex-col justify-between relative pb-20">
+            
+            <!-- App Header -->
+            <header class="p-5 pb-3 flex items-center justify-between border-b border-slate-800/50 bg-phantom-900/80 sticky top-0 z-30 backdrop-blur-md">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-phantom-gold to-yellow-300 p-0.5 shadow-md">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Profile" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 id="userDisplayName" class="text-sm font-bold text-white">Alex Morgan</h2>
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-phantom-gold/20 text-phantom-gold border border-phantom-gold/30">VIP</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400">EUR Account • Eurozone</p>
+                    </div>
+                </div>
 
-    function updateChart(tf, e) {
-      document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      if(tf==='1D') lineC.data.datasets[0].data = [2.80, 2.82, 2.84, 2.85];
-      else lineC.data.datasets[0].data = [1.8, 2.1, 2.4, 2.85];
-      lineC.update();
-    }
-    
-    function updateChartColors() {
-      // Pour une implémentation avancée, on mettrait à jour les couleurs de la grille ici
-      lineC.update(); doughC.update();
-    }
-  </script>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleBalancePrivacy()" class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs transition-colors" title="Toggle Balance Privacy">
+                        <i id="privacyIcon" class="fa-solid fa-eye"></i>
+                    </button>
+                    <button onclick="openSettingsModal()" class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs transition-colors" title="Settings">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- TAB 1: DASHBOARD -->
+            <div id="tabDashboard" class="tab-content p-5 space-y-6 flex-1">
+                <!-- Balance Display Card -->
+                <div class="glass-card p-6 rounded-3xl relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-phantom-gold/10 rounded-full blur-2xl"></div>
+                    <span class="text-xs font-medium text-slate-400 tracking-wider">TOTAL ACTIVE BALANCE</span>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span id="balanceDisplay" class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">€124,850.50</span>
+                        <span class="text-xs text-emerald-400 font-semibold"><i class="fa-solid fa-arrow-trend-up"></i> +4.2%</span>
+                    </div>
+
+                    <!-- Quick Action Buttons -->
+                    <div class="grid grid-cols-4 gap-2 mt-6">
+                        <button onclick="openAddMoneyModal()" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 text-slate-200 transition-all border border-slate-700/50">
+                            <div class="w-9 h-9 rounded-xl bg-phantom-gold/20 text-phantom-gold flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                            <span class="text-[10px] font-medium">Add Money</span>
+                        </button>
+
+                        <button onclick="openSendMoneyModal()" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 text-slate-200 transition-all border border-slate-700/50">
+                            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </div>
+                            <span class="text-[10px] font-medium">Transfer</span>
+                        </button>
+
+                        <button onclick="switchTab('vaults')" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 text-slate-200 transition-all border border-slate-700/50">
+                            <div class="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-vault"></i>
+                            </div>
+                            <span class="text-[10px] font-medium">Vaults</span>
+                        </button>
+
+                        <button onclick="showToast('Analytics', 'Monthly report generated.')" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 text-slate-200 transition-all border border-slate-700/50">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                            <span class="text-[10px] font-medium">Insights</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Transactions History Section -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-slate-200">Recent Transactions</h3>
+                        <div class="flex gap-1 text-[10px]">
+                            <button onclick="filterTransactions('all')" id="filterAll" class="px-2.5 py-1 rounded-lg bg-phantom-gold text-phantom-950 font-bold">All</button>
+                            <button onclick="filterTransactions('sent')" id="filterSent" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white">Sent</button>
+                            <button onclick="filterTransactions('received')" id="filterReceived" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white">Received</button>
+                        </div>
+                    </div>
+
+                    <div id="transactionsList" class="space-y-2.5">
+                        <!-- Dynamic Transactions populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: CARDS MANAGEMENT -->
+            <div id="tabCards" class="tab-content hidden p-5 space-y-6 flex-1">
+                <!-- Section Title -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white">Digital & Physical Cards</h3>
+                        <p class="text-xs text-slate-400">Manage virtual card & physical finish</p>
+                    </div>
+                    <button onclick="flipDigitalCard()" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
+                        <i class="fa-solid fa-rotate"></i> Flip
+                    </button>
+                </div>
+
+                <!-- 3D Flippable Digital Card -->
+                <div class="perspective-1000 w-full h-52">
+                    <div id="digitalCard" class="relative w-full h-full rounded-2xl transform-style-3d transition-transform duration-700 shadow-2xl">
+                        
+                        <!-- CARD FRONT -->
+                        <div id="cardFrontFace" class="absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between backface-hidden card-bg-default border border-slate-700/60 overflow-hidden bg-cover bg-center">
+                            <!-- Top Card Bar -->
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-extrabold tracking-wider text-sm text-phantom-gold">PHANTOM</span>
+                                    <span class="text-[10px] text-slate-400 uppercase tracking-widest">Virtual</span>
+                                </div>
+
+                                <!-- THREE-DOT MENU BUTTON -->
+                                <div class="relative">
+                                    <button onclick="toggleCardMenu(event)" class="w-8 h-8 rounded-full bg-slate-900/60 hover:bg-slate-900 text-slate-300 flex items-center justify-center transition-colors">
+                                        <i class="fa-solid fa-ellipsis-vertical text-base"></i>
+                                    </button>
+
+                                    <!-- Context Dropdown Menu -->
+                                    <div id="cardContextMenu" class="hidden absolute right-0 mt-2 w-48 glass-modal rounded-2xl shadow-2xl z-40 overflow-hidden border border-slate-700/80">
+                                        <button onclick="openEditCardInfoModal()" class="w-full px-4 py-3 text-left text-xs text-slate-200 hover:bg-slate-800/80 flex items-center gap-2.5">
+                                            <i class="fa-solid fa-pen text-phantom-gold"></i>
+                                            <span>Edit Card Info</span>
+                                        </button>
+                                        <button onclick="openEditCardAppearanceModal()" class="w-full px-4 py-3 text-left text-xs text-slate-200 hover:bg-slate-800/80 flex items-center gap-2.5 border-t border-slate-800">
+                                            <i class="fa-solid fa-image text-phantom-cyan"></i>
+                                            <span>Edit Appearance</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chip & Contactless Icon -->
+                            <div class="flex items-center gap-3 my-2">
+                                <div class="w-10 h-7 rounded-md bg-gradient-to-tr from-yellow-300 to-yellow-600 p-1 flex flex-col justify-between">
+                                    <div class="h-1/3 border-b border-yellow-800/40"></div>
+                                    <div class="h-1/3 border-b border-yellow-800/40"></div>
+                                </div>
+                                <i class="fa-solid fa-wifi text-slate-400 text-sm rotate-90"></i>
+                            </div>
+
+                            <!-- Card Number & Details -->
+                            <div>
+                                <p id="cardNumDisplay" class="font-mono text-lg tracking-widest text-white font-semibold">4532 •••• •••• 8892</p>
+                                <div class="flex justify-between items-end mt-3">
+                                    <div>
+                                        <p class="text-[8px] text-slate-400 tracking-wider">CARD HOLDER</p>
+                                        <p id="cardHolderDisplay" class="text-xs font-bold text-slate-100 uppercase tracking-wider">ALEX MORGAN</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-slate-400 tracking-wider">EXPIRES</p>
+                                        <p id="cardExpDisplay" class="text-xs font-bold text-slate-100 font-mono">12/28</p>
+                                    </div>
+                                    <i class="fa-brands fa-cc-visa text-2xl text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD BACK -->
+                        <div class="absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between backface-hidden rotate-y-180 card-bg-default border border-slate-700/60 overflow-hidden">
+                            <div class="w-[115%] -mx-5 h-10 bg-slate-950 mt-2"></div>
+                            <div>
+                                <div class="bg-slate-800/90 p-2 rounded-lg flex justify-between items-center my-2">
+                                    <span class="text-[9px] text-slate-400">AUTHORIZED SIGNATURE</span>
+                                    <span id="cardCvvDisplay" class="font-mono text-xs text-white font-bold tracking-widest bg-slate-900 px-2 py-1 rounded">849</span>
+                                </div>
+                                <p class="text-[9px] text-slate-400 leading-tight">This card is property of Phantom Euro Bank. Issued under license.</p>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] text-slate-400">
+                                <span>Support: +44 20 7946 0912</span>
+                                <i class="fa-solid fa-shield-halved text-phantom-gold"></i>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Physical Card Material Finish Selection -->
+                <div class="glass-card p-5 rounded-3xl space-y-4">
+                    <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Select Physical Finish</h4>
+                    
+                    <div id="physicalPreview" class="h-28 rounded-2xl p-4 flex flex-col justify-between finish-matte transition-all duration-300">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-extrabold text-white tracking-widest">PHANTOM PHYSICAL</span>
+                            <span id="finishBadge" class="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">MATTE BLACK</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <span class="text-xs font-mono text-slate-300">•••• 9941</span>
+                            <i class="fa-solid fa-gem text-phantom-gold text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setPhysicalFinish('matte')" id="finishMatteBtn" class="py-2.5 px-3 rounded-xl border border-phantom-gold text-xs font-bold bg-phantom-gold/10 text-phantom-gold flex flex-col items-center gap-1 transition-all">
+                            <i class="fa-solid fa-circle text-slate-900 text-sm"></i>
+                            <span>Matte Black</span>
+                        </button>
+                        <button onclick="setPhysicalFinish('gold')" id="finishGoldBtn" class="py-2.5 px-3 rounded-xl border border-slate-800 text-xs font-bold bg-slate-800/50 text-slate-400 hover:text-white flex flex-col items-center gap-1 transition-all">
+                            <i class="fa-solid fa-circle text-amber-400 text-sm"></i>
+                            <span>VIP Gold</span>
+                        </button>
+                        <button onclick="setPhysicalFinish('metal')" id="finishMetalBtn" class="py-2.5 px-3 rounded-xl border border-slate-800 text-xs font-bold bg-slate-800/50 text-slate-400 hover:text-white flex flex-col items-center gap-1 transition-all">
+                            <i class="fa-solid fa-circle text-slate-400 text-sm"></i>
+                            <span>Heavy Metal</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SAVINGS VAULTS (CRUD) -->
+            <div id="tabVaults" class="tab-content hidden p-5 space-y-6 flex-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white">Savings Vaults</h3>
+                        <p class="text-xs text-slate-400">Lock funds away & track progress</p>
+                    </div>
+                    <button onclick="openAddVaultModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-phantom-gold to-yellow-500 text-phantom-950 text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-phantom-gold/20">
+                        <i class="fa-solid fa-plus"></i> Add Vault
+                    </button>
+                </div>
+
+                <!-- Vaults Container List -->
+                <div id="vaultsList" class="space-y-4">
+                    <!-- Dynamic Vault Cards rendered by JS -->
+                </div>
+            </div>
+
+            <!-- TAB 4: PROFILE & ACCOUNT -->
+            <div id="tabProfile" class="tab-content hidden p-5 space-y-6 flex-1">
+                <!-- User Banner -->
+                <div class="glass-card p-6 rounded-3xl text-center relative overflow-hidden">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-phantom-gold to-yellow-200 p-1 mx-auto mb-3 shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Avatar" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <h3 id="profileName" class="text-lg font-extrabold text-white">Alex Morgan</h3>
+                    <p class="text-xs text-phantom-gold font-medium">Phantom Metal Member</p>
+                    <p class="text-[11px] text-slate-500 mt-1">IBAN: DE89 3704 0044 0532 0130 00</p>
+                </div>
+
+                <!-- Account Actions Grid -->
+                <div class="space-y-2">
+                    <button onclick="openSettingsModal()" class="w-full p-4 rounded-2xl glass-card-interactive flex items-center justify-between text-left">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-phantom-gold/20 text-phantom-gold flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-gear"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-white">Settings & Display</p>
+                                <p class="text-[10px] text-slate-400">Layout, Expanded Wide View & preferences</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
+                    </button>
+
+                    <button onclick="showToast('Security', 'Biometric authentication active.')" class="w-full p-4 rounded-2xl glass-card-interactive flex items-center justify-between text-left">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-white">Security & Passcode</p>
+                                <p class="text-[10px] text-slate-400">FaceID, PIN & Active Sessions</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
+                    </button>
+
+                    <button onclick="handleLogout()" class="w-full p-4 rounded-2xl glass-card-interactive flex items-center justify-between text-left border-red-500/20 hover:border-red-500/40">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-red-400">Log Out</p>
+                                <p class="text-[10px] text-slate-500">End current session securely</p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-phantom-950/90 border-t border-slate-800/80 p-3 backdrop-blur-xl z-30 flex justify-around items-center rounded-b-[32px]">
+                <button onclick="switchTab('dashboard')" id="navDashboard" class="flex flex-col items-center gap-1 text-phantom-gold">
+                    <i class="fa-solid fa-house-circle-check text-base"></i>
+                    <span class="text-[10px] font-bold">Home</span>
+                </button>
+                <button onclick="switchTab('cards')" id="navCards" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-200">
+                    <i class="fa-solid fa-credit-card text-base"></i>
+                    <span class="text-[10px] font-bold">Cards</span>
+                </button>
+                <button onclick="switchTab('vaults')" id="navVaults" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-200">
+                    <i class="fa-solid fa-vault text-base"></i>
+                    <span class="text-[10px] font-bold">Vaults</span>
+                </button>
+                <button onclick="switchTab('profile')" id="navProfile" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-200">
+                    <i class="fa-solid fa-user-gear text-base"></i>
+                    <span class="text-[10px] font-bold">Account</span>
+                </button>
+            </nav>
+
+        </main>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+
+    <!-- MODAL 1: EDIT CARD INFO -->
+    <div id="editCardInfoModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white">Edit Digital Card Info</h3>
+                <button onclick="closeModal('editCardInfoModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">CARD HOLDER NAME</label>
+                    <input type="text" id="editCardHolder" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">CARD NUMBER</label>
+                    <input type="text" id="editCardNumber" placeholder="4532 8892 1042 8892" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">EXPIRATION DATE (MM/YY)</label>
+                    <input type="text" id="editCardExp" placeholder="12/28" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeModal('editCardInfoModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
+                <button onclick="saveCardInfo()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EDIT CARD APPEARANCE (CUSTOM BACKGROUND) -->
+    <div id="editCardAppearanceModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white">Custom Card Appearance</h3>
+                <button onclick="closeModal('editCardAppearanceModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+
+            <div class="bg-phantom-gold/10 border border-phantom-gold/30 rounded-2xl p-4 text-xs text-slate-300 space-y-1">
+                <p class="font-bold text-phantom-gold"><i class="fa-solid fa-circle-info mr-1"></i> Recommended Image Specs:</p>
+                <p>• Dimensions: <span class="font-mono text-white">1056 x 672 px</span> (or higher)</p>
+                <p>• Aspect Ratio: <span class="font-mono text-white">1.58 : 1</span></p>
+                <p>• Formats: JPG, PNG, WEBP</p>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-2">UPLOAD BACKGROUND IMAGE</label>
+                <input type="file" id="cardBgFileInput" accept="image/*" onchange="handleCardBgUpload(event)" class="w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-phantom-gold file:text-phantom-950 hover:file:bg-yellow-400 cursor-pointer">
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="resetCardAppearance()" class="py-3 px-4 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Reset Default</button>
+                <button onclick="closeModal('editCardAppearanceModal')" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: ADD/EDIT VAULT -->
+    <div id="vaultModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 id="vaultModalTitle" class="text-sm font-bold text-white">Create New Vault</h3>
+                <button onclick="closeModal('vaultModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+
+            <input type="hidden" id="vaultEditId">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">VAULT NAME</label>
+                    <input type="text" id="vaultNameInput" placeholder="e.g. New Car / Dream Holiday" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">TARGET GOAL AMOUNT (€)</label>
+                    <input type="number" id="vaultTargetInput" placeholder="5000" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                </div>
+                <div id="vaultInitialDepositGroup">
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">INITIAL DEPOSIT (€)</label>
+                    <input type="number" id="vaultCurrentInput" value="0" placeholder="0" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeModal('vaultModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
+                <button onclick="saveVault()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Save Vault</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: VAULT DEPOSIT / WITHDRAW -->
+    <div id="vaultFundsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 id="vaultFundsTitle" class="text-sm font-bold text-white">Deposit to Vault</h3>
+                <button onclick="closeModal('vaultFundsModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+
+            <input type="hidden" id="vaultFundsId">
+            <input type="hidden" id="vaultFundsType">
+
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1">AMOUNT (€)</label>
+                <input type="number" id="vaultFundsAmount" placeholder="100" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeModal('vaultFundsModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
+                <button onclick="processVaultFunds()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: SETTINGS & EXPANDED WIDE VIEW -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-5">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white">App Settings</h3>
+                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Expanded Wide View Toggle -->
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-phantom-950 border border-slate-800">
+                    <div>
+                        <p class="text-xs font-bold text-white">Expanded Wide View</p>
+                        <p class="text-[10px] text-slate-400">Expand mobile frame to desktop width</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="wideViewToggle" onchange="toggleWideView(this.checked)" class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-phantom-gold"></div>
+                    </label>
+                </div>
+
+                <!-- Privacy Mode Toggle -->
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-phantom-950 border border-slate-800">
+                    <div>
+                        <p class="text-xs font-bold text-white">Hide Balances</p>
+                        <p class="text-[10px] text-slate-400">Mask numbers for social proof</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="privacyToggle" onchange="toggleBalancePrivacy(this.checked)" class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-phantom-gold"></div>
+                    </label>
+                </div>
+            </div>
+
+            <button onclick="closeModal('settingsModal')" class="w-full py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Done</button>
+        </div>
+    </div>
+
+    <!-- MODAL 6: QUICK ADD MONEY -->
+    <div id="addMoneyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white">Add Funds</h3>
+                <button onclick="closeModal('addMoneyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1">AMOUNT TO ADD (€)</label>
+                <input type="number" id="addMoneyAmount" placeholder="1000" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeModal('addMoneyModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
+                <button onclick="processAddMoney()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Add Instant Funds</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 7: QUICK SEND MONEY -->
+    <div id="sendMoneyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white">Send Money</h3>
+                <button onclick="closeModal('sendMoneyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">RECIPIENT NAME / IBAN</label>
+                    <input type="text" id="sendRecipient" placeholder="e.g. Elena Rostova" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">AMOUNT (€)</label>
+                    <input type="number" id="sendAmount" placeholder="250" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeModal('sendMoneyModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
+                <button onclick="processSendMoney()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Send Payment</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <script>
+        // APP STATE persistence
+        let state = {
+            isLoggedIn: false,
+            balance: 124850.50,
+            isPrivate: false,
+            wideView: false,
+            currentTab: 'dashboard',
+            cardData: {
+                holder: 'ALEX MORGAN',
+                number: '4532 8892 1042 8892',
+                exp: '12/28',
+                cvv: '849',
+                customBg: null
+            },
+            physicalFinish: 'matte',
+            vaults: [
+                { id: 1, name: 'Porsche 911 GT3 Goal', target: 180000, current: 125000, icon: 'fa-car' },
+                { id: 2, name: 'Dubai Penthouse Deposit', target: 500000, current: 310000, icon: 'fa-building' }
+            ],
+            transactions: [
+                { id: 101, title: 'Crypto Yield Payout', type: 'received', amount: 4850.00, date: 'Today, 14:20', icon: 'fa-arrow-down-left' },
+                { id: 102, title: 'Monaco Yacht Club', type: 'sent', amount: -1200.00, date: 'Yesterday, 19:45', icon: 'fa-arrow-up-right' },
+                { id: 103, title: 'Rolex Boutique Geneve', type: 'sent', amount: -18500.00, date: '04 Oct, 11:30', icon: 'fa-gem' }
+            ]
+        };
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStateFromStorage();
+            renderAll();
+        });
+
+        function saveStateToStorage() {
+            try {
+                localStorage.setItem('phantom_euro_state', JSON.stringify(state));
+            } catch (e) {
+                console.error("Storage error:", e);
+            }
+        }
+
+        function loadStateFromStorage() {
+            const stored = localStorage.getItem('phantom_euro_state');
+            if (stored) {
+                try {
+                    state = { ...state, ...JSON.parse(stored) };
+                } catch (e) {
+                    console.error("Failed to parse storage:", e);
+                }
+            }
+        }
+
+        function renderAll() {
+            // Auth State
+            if (state.isLoggedIn) {
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('mainAppSection').classList.remove('hidden');
+            } else {
+                document.getElementById('authSection').classList.remove('hidden');
+                document.getElementById('mainAppSection').classList.add('hidden');
+            }
+
+            // Balance Display
+            const balEl = document.getElementById('balanceDisplay');
+            if (state.isPrivate) {
+                balEl.innerText = '••••••••';
+            } else {
+                balEl.innerText = '€' + state.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+
+            // Card Rendering
+            document.getElementById('cardHolderDisplay').innerText = state.cardData.holder;
+            document.getElementById('cardNumDisplay').innerText = formatCardNumber(state.cardData.number);
+            document.getElementById('cardExpDisplay').innerText = state.cardData.exp;
+            document.getElementById('cardCvvDisplay').innerText = state.cardData.cvv;
+            document.getElementById('userDisplayName').innerText = state.cardData.holder;
+            document.getElementById('profileName').innerText = state.cardData.holder;
+
+            const frontFace = document.getElementById('cardFrontFace');
+            if (state.cardData.customBg) {
+                frontFace.style.backgroundImage = `url('${state.cardData.customBg}')`;
+            } else {
+                frontFace.style.backgroundImage = '';
+            }
+
+            // Wide View Container
+            applyWideViewClass(state.wideView);
+            document.getElementById('wideViewToggle').checked = state.wideView;
+            document.getElementById('privacyToggle').checked = state.isPrivate;
+
+            // Render Vaults & Transactions
+            renderVaults();
+            renderTransactions('all');
+            setPhysicalFinish(state.physicalFinish, false);
+        }
+
+        function switchAuthTab(type) {
+            const loginBtn = document.getElementById('tabLoginBtn');
+            const signupBtn = document.getElementById('tabSignupBtn');
+            const nameField = document.getElementById('nameField');
+
+            if (type === 'login') {
+                loginBtn.className = "flex-1 py-2.5 text-xs font-bold rounded-xl bg-phantom-gold text-phantom-950 transition-all shadow-md";
+                signupBtn.className = "flex-1 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-all";
+                nameField.classList.add('hidden');
+            } else {
+                signupBtn.className = "flex-1 py-2.5 text-xs font-bold rounded-xl bg-phantom-gold text-phantom-950 transition-all shadow-md";
+                loginBtn.className = "flex-1 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-all";
+                nameField.classList.remove('hidden');
+            }
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('authName').value;
+            if (nameInput.trim().length > 0) {
+                state.cardData.holder = nameInput.toUpperCase();
+            }
+            state.isLoggedIn = true;
+            saveStateToStorage();
+            renderAll();
+            showToast('Welcome', 'Authenticated into Phantom Terminal.');
+        }
+
+        function handleLogout() {
+            state.isLoggedIn = false;
+            saveStateToStorage();
+            renderAll();
+            showToast('Logged Out', 'Your session has ended.');
+        }
+
+        function switchTab(tabId) {
+            state.currentTab = tabId;
+            const tabs = ['dashboard', 'cards', 'vaults', 'profile'];
+            tabs.forEach(t => {
+                const content = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+                const navBtn = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
+                
+                if (t === tabId) {
+                    content.classList.remove('hidden');
+                    if (navBtn) navBtn.className = "flex flex-col items-center gap-1 text-phantom-gold";
+                } else {
+                    content.classList.add('hidden');
+                    if (navBtn) navBtn.className = "flex flex-col items-center gap-1 text-slate-500 hover:text-slate-200";
+                }
+            });
+        }
+
+        function flipDigitalCard() {
+            const card = document.getElementById('digitalCard');
+            card.classList.toggle('rotate-y-180');
+        }
+
+        function toggleCardMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('cardContextMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', () => {
+            const menu = document.getElementById('cardContextMenu');
+            if (menu && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        function openEditCardInfoModal() {
+            document.getElementById('editCardHolder').value = state.cardData.holder;
+            document.getElementById('editCardNumber').value = state.cardData.number;
+            document.getElementById('editCardExp').value = state.cardData.exp;
+            openModal('editCardInfoModal');
+        }
+
+        function saveCardInfo() {
+            const holder = document.getElementById('editCardHolder').value;
+            const num = document.getElementById('editCardNumber').value;
+            const exp = document.getElementById('editCardExp').value;
+
+            if (holder) state.cardData.holder = holder.toUpperCase();
+            if (num) state.cardData.number = num;
+            if (exp) state.cardData.exp = exp;
+
+            saveStateToStorage();
+            renderAll();
+            closeModal('editCardInfoModal');
+            showToast('Card Updated', 'Digital card details updated.');
+        }
+
+        function openEditCardAppearanceModal() {
+            openModal('editCardAppearanceModal');
+        }
+
+        function handleCardBgUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    state.cardData.customBg = e.target.result;
+                    saveStateToStorage();
+                    renderAll();
+                    showToast('Custom Appearance', 'Card background image applied.');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetCardAppearance() {
+            state.cardData.customBg = null;
+            saveStateToStorage();
+            renderAll();
+            closeModal('editCardAppearanceModal');
+            showToast('Appearance Reset', 'Card background set to default.');
+        }
+
+        function formatCardNumber(numStr) {
+            const clean = numStr.replace(/\s+/g, '');
+            if (clean.length < 16) return numStr;
+            return clean.substring(0,4) + ' •••• •••• ' + clean.substring(12);
+        }
+
+        function setPhysicalFinish(finish, notify = true) {
+            state.physicalFinish = finish;
+            const preview = document.getElementById('physicalPreview');
+            const badge = document.getElementById('finishBadge');
+
+            const matteBtn = document.getElementById('finishMatteBtn');
+            const goldBtn = document.getElementById('finishGoldBtn');
+            const metalBtn = document.getElementById('finishMetalBtn');
+
+            // Reset buttons
+            [matteBtn, goldBtn, metalBtn].forEach(b => {
+                b.className = "py-2.5 px-3 rounded-xl border border-slate-800 text-xs font-bold bg-slate-800/50 text-slate-400 hover:text-white flex flex-col items-center gap-1 transition-all";
+            });
+
+            if (finish === 'matte') {
+                preview.className = "h-28 rounded-2xl p-4 flex flex-col justify-between finish-matte transition-all duration-300";
+                badge.innerText = "MATTE BLACK";
+                badge.className = "text-[9px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300";
+                matteBtn.className = "py-2.5 px-3 rounded-xl border border-phantom-gold text-xs font-bold bg-phantom-gold/10 text-phantom-gold flex flex-col items-center gap-1 transition-all";
+            } else if (finish === 'gold') {
+                preview.className = "h-28 rounded-2xl p-4 flex flex-col justify-between finish-gold transition-all duration-300";
+                badge.innerText = "VIP GOLD";
+                badge.className = "text-[9px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40";
+                goldBtn.className = "py-2.5 px-3 rounded-xl border border-phantom-gold text-xs font-bold bg-phantom-gold/10 text-phantom-gold flex flex-col items-center gap-1 transition-all";
+            } else if (finish === 'metal') {
+                preview.className = "h-28 rounded-2xl p-4 flex flex-col justify-between finish-metal transition-all duration-300";
+                badge.innerText = "HEAVY METAL";
+                badge.className = "text-[9px] font-bold px-2 py-0.5 rounded bg-slate-700 text-slate-100";
+                metalBtn.className = "py-2.5 px-3 rounded-xl border border-phantom-gold text-xs font-bold bg-phantom-gold/10 text-phantom-gold flex flex-col items-center gap-1 transition-all";
+            }
+
+            saveStateToStorage();
+            if (notify) showToast('Finish Selected', `Physical card finish changed to ${finish.toUpperCase()}.`);
+        }
+
+        function renderVaults() {
+            const list = document.getElementById('vaultsList');
+            list.innerHTML = '';
+
+            if (state.vaults.length === 0) {
+                list.innerHTML = `<div class="p-8 text-center glass-card rounded-2xl text-slate-500 text-xs">No active vaults found. Create one to begin saving!</div>`;
+                return;
+            }
+
+            state.vaults.forEach(vault => {
+                const pct = Math.min(100, Math.round((vault.current / vault.target) * 100));
+                
+                const item = document.createElement('div');
+                item.className = "glass-card p-5 rounded-2xl space-y-3";
+                item.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-phantom-cyan/20 text-phantom-cyan flex items-center justify-center text-sm">
+                                <i class="fa-solid ${vault.icon || 'fa-vault'}"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">${vault.name}</h4>
+                                <p class="text-[10px] text-slate-400">Target: €${vault.target.toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="openEditVaultModal(${vault.id})" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white text-xs flex items-center justify-center">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteVault(${vault.id})" class="w-7 h-7 rounded-lg bg-red-500/20 text-red-400 hover:text-red-300 text-xs flex items-center justify-center">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[11px] font-semibold">
+                            <span class="text-white">€${vault.current.toLocaleString()}</span>
+                            <span class="text-phantom-cyan">${pct}%</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-phantom-cyan to-blue-500 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-1">
+                        <button onclick="openVaultFundsModal(${vault.id}, 'deposit')" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-colors">Deposit</button>
+                        <button onclick="openVaultFundsModal(${vault.id}, 'withdraw')" class="flex-1 py-2 bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold rounded-xl transition-colors">Withdraw</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function openAddVaultModal() {
+            document.getElementById('vaultModalTitle').innerText = "Create New Vault";
+            document.getElementById('vaultEditId').value = "";
+            document.getElementById('vaultNameInput').value = "";
+            document.getElementById('vaultTargetInput').value = "";
+            document.getElementById('vaultCurrentInput').value = "0";
+            document.getElementById('vaultInitialDepositGroup').classList.remove('hidden');
+            openModal('vaultModal');
+        }
+
+        function openEditVaultModal(id) {
+            const vault = state.vaults.find(v => v.id === id);
+            if (!vault) return;
+
+            document.getElementById('vaultModalTitle').innerText = "Edit Vault Goals";
+            document.getElementById('vaultEditId').value = vault.id;
+            document.getElementById('vaultNameInput').value = vault.name;
+            document.getElementById('vaultTargetInput').value = vault.target;
+            document.getElementById('vaultInitialDepositGroup').classList.add('hidden');
+            openModal('vaultModal');
+        }
+
+        function saveVault() {
+            const id = document.getElementById('vaultEditId').value;
+            const name = document.getElementById('vaultNameInput').value;
+            const target = parseFloat(document.getElementById('vaultTargetInput').value);
+            const current = parseFloat(document.getElementById('vaultCurrentInput').value) || 0;
+
+            if (!name || isNaN(target) || target <= 0) {
+                showToast('Invalid Input', 'Please provide a valid vault name & target.');
+                return;
+            }
+
+            if (id) {
+                // Edit existing
+                const vault = state.vaults.find(v => v.id == id);
+                if (vault) {
+                    vault.name = name;
+                    vault.target = target;
+                }
+            } else {
+                // Add new
+                state.vaults.push({
+                    id: Date.now(),
+                    name: name,
+                    target: target,
+                    current: current,
+                    icon: 'fa-piggy-bank'
+                });
+            }
+
+            saveStateToStorage();
+            renderAll();
+            closeModal('vaultModal');
+            showToast('Vault Saved', 'Vault goal updated successfully.');
+        }
+
+        function deleteVault(id) {
+            state.vaults = state.vaults.filter(v => v.id !== id);
+            saveStateToStorage();
+            renderAll();
+            showToast('Vault Deleted', 'Vault removed.');
+        }
+
+        function openVaultFundsModal(id, type) {
+            const vault = state.vaults.find(v => v.id === id);
+            if (!vault) return;
+
+            document.getElementById('vaultFundsId').value = id;
+            document.getElementById('vaultFundsType').value = type;
+            document.getElementById('vaultFundsTitle').innerText = (type === 'deposit' ? 'Deposit to ' : 'Withdraw from ') + vault.name;
+            document.getElementById('vaultFundsAmount').value = '';
+            openModal('vaultFundsModal');
+        }
+
+        function processVaultFunds() {
+            const id = parseInt(document.getElementById('vaultFundsId').value);
+            const type = document.getElementById('vaultFundsType').value;
+            const amount = parseFloat(document.getElementById('vaultFundsAmount').value);
+
+            if (isNaN(amount) || amount <= 0) {
+                showToast('Error', 'Enter a valid amount.');
+                return;
+            }
+
+            const vault = state.vaults.find(v => v.id === id);
+            if (!vault) return;
+
+            if (type === 'deposit') {
+                if (state.balance < amount) {
+                    showToast('Insufficient Funds', 'Account balance is too low.');
+                    return;
+                }
+                state.balance -= amount;
+                vault.current += amount;
+                showToast('Funds Deposited', `€${amount} added to ${vault.name}`);
+            } else {
+                if (vault.current < amount) {
+                    showToast('Error', 'Vault balance is lower than request.');
+                    return;
+                }
+                vault.current -= amount;
+                state.balance += amount;
+                showToast('Funds Withdrawn', `€${amount} returned to active balance.`);
+            }
+
+            saveStateToStorage();
+            renderAll();
+            closeModal('vaultFundsModal');
+        }
+
+        function renderTransactions(filter = 'all') {
+            const list = document.getElementById('transactionsList');
+            list.innerHTML = '';
+
+            let filtered = state.transactions;
+            if (filter === 'sent') filtered = state.transactions.filter(t => t.type === 'sent');
+            if (filter === 'received') filtered = state.transactions.filter(t => t.type === 'received');
+
+            filtered.forEach(tx => {
+                const item = document.createElement('div');
+                item.className = "glass-card p-3.5 rounded-2xl flex items-center justify-between";
+                
+                const isReceived = tx.amount > 0;
+                const amtFormatted = (isReceived ? '+' : '') + '€' + Math.abs(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl ${isReceived ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-300'} flex items-center justify-center text-sm">
+                            <i class="fa-solid ${tx.icon}"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white">${tx.title}</p>
+                            <p class="text-[10px] text-slate-400">${tx.date}</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-extrabold ${isReceived ? 'text-emerald-400' : 'text-slate-200'}">${amtFormatted}</span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function filterTransactions(type) {
+            ['All', 'Sent', 'Received'].forEach(t => {
+                const btn = document.getElementById('filter' + t);
+                if (t.toLowerCase() === type) {
+                    btn.className = "px-2.5 py-1 rounded-lg bg-phantom-gold text-phantom-950 font-bold";
+                } else {
+                    btn.className = "px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white";
+                }
+            });
+            renderTransactions(type);
+        }
+
+        function openAddMoneyModal() { openModal('addMoneyModal'); }
+        function openSendMoneyModal() { openModal('sendMoneyModal'); }
+
+        function processAddMoney() {
+            const amt = parseFloat(document.getElementById('addMoneyAmount').value);
+            if (isNaN(amt) || amt <= 0) return;
+
+            state.balance += amt;
+            state.transactions.unshift({
+                id: Date.now(),
+                title: 'Instant Bank Top-Up',
+                type: 'received',
+                amount: amt,
+                date: 'Just now',
+                icon: 'fa-building-columns'
+            });
+
+            saveStateToStorage();
+            renderAll();
+            closeModal('addMoneyModal');
+            showToast('Money Added', `€${amt.toLocaleString()} added to your balance.`);
+        }
+
+        function processSendMoney() {
+            const recipient = document.getElementById('sendRecipient').value;
+            const amt = parseFloat(document.getElementById('sendAmount').value);
+            if (!recipient || isNaN(amt) || amt <= 0) return;
+
+            if (state.balance < amt) {
+                showToast('Error', 'Insufficient balance for transfer.');
+                return;
+            }
+
+            state.balance -= amt;
+            state.transactions.unshift({
+                id: Date.now(),
+                title: 'Transfer to ' + recipient,
+                type: 'sent',
+                amount: -amt,
+                date: 'Just now',
+                icon: 'fa-paper-plane'
+            });
+
+            saveStateToStorage();
+            renderAll();
+            closeModal('sendMoneyModal');
+            showToast('Payment Sent', `€${amt.toLocaleString()} sent to ${recipient}.`);
+        }
+
+        function toggleWideView(enable) {
+            state.wideView = enable;
+            applyWideViewClass(enable);
+            saveStateToStorage();
+        }
+
+        function applyWideViewClass(enable) {
+            const container = document.getElementById('appContainer');
+            if (enable) {
+                container.classList.remove('max-w-[480px]');
+                container.classList.add('max-w-5xl');
+            } else {
+                container.classList.remove('max-w-5xl');
+                container.classList.add('max-w-[480px]');
+            }
+        }
+
+        function toggleBalancePrivacy(forcedValue) {
+            if (typeof forcedValue === 'boolean') {
+                state.isPrivate = forcedValue;
+            } else {
+                state.isPrivate = !state.isPrivate;
+            }
+            saveStateToStorage();
+            renderAll();
+        }
+
+        function openSettingsModal() { openModal('settingsModal'); }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function showToast(title, message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+
+            toast.classList.remove('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+            }, 3500);
+        }
+    </script>
 </body>
 </html>
