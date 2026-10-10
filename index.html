@@ -1,1302 +1,972 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phantom Euro Bank - Premium Digital Banking</title>
+    <title>Phantom Euro Bank</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        phantom: {
-                            50: '#f4f4f6',
-                            100: '#e5e6eb',
-                            800: '#14151f',
-                            900: '#0b0c13',
-                            950: '#05060a',
-                            gold: '#d4af37',
-                            goldLight: '#f3e5ab',
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                        }
+                        brandDark: '#050B18',
+                        brandBlue: '#3b82f6',
+                        brandCardBg: '#0f172a',
                     },
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom CSS Styles -->
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #05060a;
-            color: #f3f4f6;
-            overflow-x: hidden;
-        }
-
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #0b0c13;
+            background: #050B18;
         }
         ::-webkit-scrollbar-thumb {
-            background: #27273a;
+            background: #1e293b;
             border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #3b3b54;
+            background: #3b82f6;
         }
-
-        /* Glassmorphism styling */
-        .glass-card {
-            background: rgba(18, 20, 32, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        body {
+            background-color: #050B18;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
         }
-
-        .glass-card-interactive {
-            background: rgba(18, 20, 32, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .card-gradient-1 {
+            background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
         }
-        .glass-card-interactive:hover {
-            border-color: rgba(212, 175, 55, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.1);
+        .card-gradient-2 {
+            background: linear-gradient(135deg, #374151 0%, #111827 100%);
         }
-
-        .glass-modal {
-            background: rgba(11, 12, 19, 0.9);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+        .card-gradient-3 {
+            background: linear-gradient(135deg, #b45309 0%, #78350f 100%);
         }
-
-        .perspective-1000 {
-            perspective: 1000px;
+        .fade-in {
+            animation: fadeIn 0.25s ease-in-out forwards;
         }
-        .transform-style-3d {
-            transform-style: preserve-3d;
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
-
-        /* Physical Card Material Styles */
-        .finish-matte {
-            background: linear-gradient(135deg, #181924 0%, #0c0d14 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .finish-gold {
-            background: linear-gradient(135deg, #382b0e 0%, #1a1303 50%, #4a3810 100%);
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.2);
-        }
-        .finish-metal {
-            background: linear-gradient(135deg, #334155 0%, #0f172a 50%, #1e293b 100%);
-            border: 1px solid rgba(203, 213, 225, 0.3);
-            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1);
-        }
-
-        /* Social Button Image Precision Cropping */
-        .social-avatar-btn img {
-            object-fit: cover;
-            object-position: center;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Transitions for Container Layout Scaling */
-        .app-view-container {
-            transition: max-width 0.4s ease-in-out, padding 0.4s ease-in-out;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="min-h-screen bg-phantom-950 text-slate-100 flex flex-col items-center justify-center p-2 sm:p-4">
+<body class="h-full flex flex-col items-center justify-center m-0 p-0 overflow-x-hidden">
 
-    <div id="toastNotification" class="fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl glass-card text-white shadow-2xl transition-all duration-300 transform translate-x-full opacity-0">
-        <div id="toastIcon" class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">
-            <i class="fa-solid fa-check"></i>
-        </div>
-        <div>
-            <p id="toastTitle" class="font-semibold text-sm">Notification</p>
-            <p id="toastMessage" class="text-xs text-slate-400">Action completed successfully.</p>
-        </div>
-    </div>
-
-    <!-- MAIN APP WRAPPER (Mobile 480px default vs Expanded Wide View) -->
-    <div id="appContainer" class="app-view-container w-full max-w-[480px] bg-phantom-900 border border-slate-800/80 rounded-[32px] shadow-2xl overflow-hidden min-h-[850px] flex flex-col relative transition-all duration-300">
-
-        <!-- =================================================================== -->
-        <!-- =================================================================== -->
-        <section id="authSection" class="w-full h-full flex-1 flex flex-col justify-between p-6 sm:p-8 relative">
-            <div class="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-phantom-950/80 pointer-events-none"></div>
-
-            <!-- Top Branding Banner -->
-            <div class="relative z-10 text-center mt-6">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-phantom-gold to-yellow-200 text-phantom-950 text-2xl font-black shadow-lg shadow-phantom-gold/20 mb-4">
-                    <i class="fa-solid fa-bolt"></i>
-                </div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Phantom <span class="text-phantom-gold">Euro Bank</span></h1>
-                <p class="text-xs sm:text-sm text-slate-400 mt-1">Next-Generation Wealth & Lifestyle Banking</p>
-            </div>
-
-            <!-- Auth Form & Toggle -->
-            <div class="relative z-10 my-8 glass-card p-6 rounded-3xl">
-                <div class="flex bg-phantom-950/60 p-1 rounded-2xl mb-6 border border-slate-800">
-                    <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-phantom-gold text-phantom-950 transition-all shadow-md">Sign In</button>
-                    <button id="tabSignupBtn" onclick="switchAuthTab('signup')" class="flex-1 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-all">Create Account</button>
+    <div id="app" class="w-full h-full flex flex-col items-center justify-center relative">
+        
+        <!-- AUTHENTICATION SCREEN -->
+        <div id="auth-screen" class="w-full h-full absolute inset-0 bg-[#050B18] z-50 flex flex-col lg:flex-row items-center justify-center p-6 lg:p-12">
+            <div class="max-w-md w-full space-y-8 bg-[#0f172a]/80 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-blue-500/30 text-white text-2xl font-bold mb-4">
+                        <i class="fa-solid fa-vault"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold tracking-tight text-white">Phantom Euro Bank</h2>
+                    <p class="mt-2 text-sm text-slate-400">Sign in with your verified developer profile</p>
                 </div>
 
-                <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                    <div id="nameField" class="hidden">
-                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">FULL NAME</label>
-                        <div class="relative">
-                            <i class="fa-regular fa-user absolute left-4 top-3.5 text-slate-500 text-sm"></i>
-                            <input type="text" id="authName" placeholder="Alex Morgan" class="w-full bg-phantom-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-phantom-gold transition-colors">
+                <div class="mt-8 space-y-6">
+                    <div class="rounded-xl bg-slate-900/50 p-4 border border-slate-800 text-center">
+                        <p class="text-xs text-slate-400 mb-3 uppercase tracking-wider font-semibold">Quick Connect Authentication</p>
+                        <div class="flex justify-center gap-6">
+                            <!-- TikTok Auth Button -->
+                            <a href="https://www.tiktok.com/@qx4.dev?is_from_webapp=1&sender_device=pc" target="_blank" class="group flex flex-col items-center focus:outline-none">
+                                <div class="w-16 h-16 rounded-full bg-slate-800 border-2 border-slate-700 overflow-hidden shadow-md group-hover:border-blue-500 transition duration-200 flex items-center justify-center">
+                                    <img src="tiktok.webp" alt="TikTok @qx4.dev" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/111827/ffffff?text=TikTok';">
+                                </div>
+                                <span class="text-xs mt-2 text-slate-300 group-hover:text-blue-400 font-medium">TikTok</span>
+                            </a>
+
+                            <!-- Instagram Auth Button -->
+                            <a href="https://www.instagram.com/qx.dev95?stkn=N2d6bXh3MHdnank3&utm_source=qr" target="_blank" class="group flex flex-col items-center focus:outline-none">
+                                <div class="w-16 h-16 rounded-full bg-slate-800 border-2 border-slate-700 overflow-hidden shadow-md group-hover:border-pink-500 transition duration-200 flex items-center justify-center">
+                                    <img src="instagram.webp" alt="Instagram @qx.dev95" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/111827/ffffff?text=IG';">
+                                </div>
+                                <span class="text-xs mt-2 text-slate-300 group-hover:text-pink-400 font-medium">Instagram</span>
+                            </a>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">EMAIL ADDRESS</label>
-                        <div class="relative">
-                            <i class="fa-regular fa-envelope absolute left-4 top-3.5 text-slate-500 text-sm"></i>
-                            <input type="email" id="authEmail" required value="alex.morgan@phantom.com" placeholder="name@domain.com" class="w-full bg-phantom-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-phantom-gold transition-colors">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">SECURITY PASSCODE</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-500 text-sm"></i>
-                            <input type="password" id="authPassword" required value="••••••••" placeholder="Enter password" class="w-full bg-phantom-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-phantom-gold transition-colors">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-phantom-gold to-yellow-500 hover:from-yellow-400 hover:to-phantom-gold text-phantom-950 font-bold rounded-xl text-xs tracking-wider uppercase transition-all shadow-lg shadow-phantom-gold/20 flex items-center justify-center gap-2 mt-2">
-                        <span>Access Terminal</span>
+                    <button onclick="app.login()" class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition duration-200 flex items-center justify-center gap-2">
+                        <span>Enter Bank Workspace</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
-                </form>
+                </div>
+            </div>
+        </div>
 
-                <div class="mt-6 pt-5 border-t border-slate-800/80 text-center">
-                    <p class="text-[11px] font-medium text-slate-400 mb-4">Or connect directly via Social Profiles</p>
-                    <div class="flex items-center justify-center gap-6">
-                        <!-- TikTok Button -->
-                        <a href="https://www.tiktok.com/@qx4.dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-avatar-btn group flex flex-col items-center gap-2 transition-transform hover:scale-105">
-                            <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-slate-700 group-hover:border-phantom-cyan shadow-lg transition-all bg-phantom-950 flex items-center justify-center p-0.5">
-                                <img src="tiktok.webp" alt="TikTok" class="rounded-full" onerror="this.onerror=null; this.src='https://placehold.co/100x100/0b0c13/ffffff?text=TikTok';">
-                            </div>
-                            <span class="text-[11px] text-slate-400 group-hover:text-phantom-cyan font-semibold">TikTok</span>
-                        </a>
-
-                        <!-- Instagram Button -->
-                        <a href="https://www.instagram.com/qx.dev95?stkn=N2d6bXh3MHdnank3&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-avatar-btn group flex flex-col items-center gap-2 transition-transform hover:scale-105">
-                            <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-slate-700 group-hover:border-pink-500 shadow-lg transition-all bg-phantom-950 flex items-center justify-center p-0.5">
-                                <img src="instagram.webp" alt="Instagram" class="rounded-full" onerror="this.onerror=null; this.src='https://placehold.co/100x100/0b0c13/ffffff?text=Instagram';">
-                            </div>
-                            <span class="text-[11px] text-slate-400 group-hover:text-pink-400 font-semibold">Instagram</span>
-                        </a>
-                    </div>
+        <!-- MAIN APP CONTAINER -->
+        <div id="main-app" class="hidden w-full h-full flex flex-col items-center justify-center bg-[#050B18] overflow-y-auto p-0 sm:p-4">
+            
+            <!-- Header banner outside phone container -->
+            <div id="desktop-top-header" class="w-full max-w-4xl px-6 py-4 flex flex-col sm:flex-row justify-between items-center mb-2 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <span>Bank App</span>
+                        <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Pro</span>
+                    </h1>
+                    <p class="text-sm text-slate-400" id="header-user-name">Isabella Bertucci <span class="inline-block">💻</span></p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="app.toggleWideView()" id="wide-view-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 rounded-lg border border-slate-700 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-expand"></i>
+                        <span id="wide-view-text">Expanded Wide View</span>
+                    </button>
+                    <button onclick="app.logout()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-xs font-medium text-rose-400 rounded-lg border border-rose-500/20 transition">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                    </button>
                 </div>
             </div>
 
-            <!-- Footer terms info -->
-            <p class="relative z-10 text-center text-[10px] text-slate-600">
-                Encrypted with 256-Bit Quantum Protocol. Phantom Euro Bank © 2026.
-            </p>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- =================================================================== -->
-        <main id="mainAppSection" class="hidden w-full flex-1 flex-col justify-between relative pb-20">
-            
-            <!-- App Header -->
-            <header class="p-5 pb-3 flex items-center justify-between border-b border-slate-800/50 bg-phantom-900/80 sticky top-0 z-30 backdrop-blur-md">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-phantom-gold to-yellow-300 p-0.5 shadow-md">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Profile" class="w-full h-full object-cover rounded-full">
+            <!-- Phone Frame / Responsive Workspace Wrapper -->
+            <div id="device-frame" class="w-full sm:max-w-[480px] h-full sm:h-[880px] bg-white text-slate-900 sm:rounded-[40px] shadow-2xl flex flex-col relative overflow-hidden transition-all duration-300">
+                
+                <!-- TOP STATUS BAR -->
+                <div class="w-full bg-white pt-3 px-6 pb-2 flex justify-between items-center text-xs font-semibold text-slate-800 select-none z-20">
+                    <span>11:48</span>
+                    <div class="w-24 h-4 bg-slate-100 rounded-full mx-auto absolute left-1/2 -translate-x-1/2 top-2 hidden sm:block"></div>
+                    <div class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-signal text-[10px]"></i>
+                        <i class="fa-solid fa-wifi text-[10px]"></i>
+                        <i class="fa-solid fa-battery-full"></i>
                     </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h2 id="userDisplayName" class="text-sm font-bold text-white">Alex Morgan</h2>
-                            <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-phantom-gold/20 text-phantom-gold border border-phantom-gold/30">VIP</span>
+                </div>
+
+                <!-- CONTENT VIEWS CONTAINER -->
+                <div class="flex-1 overflow-y-auto relative pb-24" id="view-container">
+                    
+                    <!-- 1. HOME VIEW -->
+                    <div id="view-home" class="view-panel p-6 space-y-6 fade-in">
+                        <!-- Welcome Header -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Welcome back!</p>
+                                <h2 class="text-xl font-bold text-slate-900" id="home-greeting-name">John Lopez Silva!</h2>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" onclick="app.switchTab('profile')">
+                                <img id="nav-pfp-preview" src="https://placehold.co/100x100/3b82f6/ffffff?text=IB" alt="Profile" class="w-full h-full object-cover">
+                            </div>
                         </div>
-                        <p class="text-[10px] text-slate-400">EUR Account • Eurozone</p>
+
+                        <!-- Digital Card Container -->
+                        <div class="relative w-full h-52 rounded-2xl shadow-xl p-5 text-white flex flex-col justify-between overflow-hidden transition-all duration-300" id="digital-card-element" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);">
+                            <!-- Background overlay image if customized -->
+                            <div id="card-custom-bg" class="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none hidden"></div>
+                            
+                            <!-- Card Header -->
+                            <div class="flex justify-between items-center relative z-10">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-6 bg-white/20 rounded-md backdrop-blur-sm flex items-center justify-center font-bold text-xs">€</div>
+                                    <span class="text-xs font-semibold tracking-wider uppercase opacity-80" id="card-type-label">Credit Card</span>
+                                </div>
+                                <div class="relative">
+                                    <button onclick="app.toggleCardMenu(event)" class="w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center text-white transition">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                    <!-- 3-Dot Dropdown Menu -->
+                                    <div id="card-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-slate-900 text-slate-200 rounded-xl shadow-2xl border border-slate-800 z-50 py-1 text-xs">
+                                        <button onclick="app.openEditCardInfoModal()" class="w-full px-4 py-2.5 text-left hover:bg-slate-800 flex items-center gap-2">
+                                            <i class="fa-solid fa-pen text-blue-400"></i> Edit Card Info
+                                        </button>
+                                        <button onclick="app.openEditCardAppearanceModal()" class="w-full px-4 py-2.5 text-left hover:bg-slate-800 flex items-center gap-2">
+                                            <i class="fa-solid fa-palette text-purple-400"></i> Edit Card Appearance
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Balance & Number -->
+                            <div class="relative z-10">
+                                <div class="text-2xl font-bold tracking-tight" id="card-balance-display">203,00 £</div>
+                                <div class="text-xs font-mono tracking-widest opacity-80 mt-1" id="card-number-display">**** **** **** 2002</div>
+                            </div>
+
+                            <!-- Card Footer -->
+                            <div class="flex justify-between items-end relative z-10 text-xs">
+                                <div>
+                                    <span class="opacity-60 text-[10px] block uppercase">Cardholder</span>
+                                    <span class="font-medium tracking-wide" id="card-holder-display">John Lopez Silva</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="opacity-60 text-[10px] block uppercase">Expires</span>
+                                    <span class="font-mono" id="card-expiry-display">20/21</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vaults / Savings Goals Section -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Savings Goals & Vaults</h3>
+                                <button onclick="app.openAddVaultModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-md transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-plus"></i> New Goal
+                                </button>
+                            </div>
+                            
+                            <div id="vaults-list" class="space-y-2.5">
+                                <!-- Vault items injected dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Transactions Section -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Transactions</h3>
+                                <span class="text-xs text-blue-600 font-semibold cursor-pointer hover:underline" onclick="app.switchTab('analytics')">View all</span>
+                            </div>
+
+                            <div class="space-y-2" id="home-transactions-list">
+                                <!-- Transaction items -->
+                                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition border border-slate-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow-sm">U</div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-900">Uber</h4>
+                                            <p class="text-[11px] text-slate-500">Travel</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-bold text-slate-900 block">-10,03 £</span>
+                                        <span class="text-[10px] text-slate-500">Debit card</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition border border-slate-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm"><i class="fa-solid fa-coffee"></i></div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-900">Starbucks</h4>
+                                            <p class="text-[11px] text-slate-500">Food</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-bold text-slate-900 block">-2,50 £</span>
+                                        <span class="text-[10px] text-slate-500">Debit card</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition border border-slate-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">C</div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-900">Continente</h4>
+                                            <p class="text-[11px] text-slate-500">Food</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-bold text-slate-900 block">-23,40 £</span>
+                                        <span class="text-[10px] text-slate-500">Credit card</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition border border-slate-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">B</div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-900">Burger King</h4>
+                                            <p class="text-[11px] text-slate-500">Food</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-bold text-slate-900 block">-12,63 £</span>
+                                        <span class="text-[10px] text-slate-500">Credit card</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="flex items-center gap-2">
-                    <button onclick="toggleBalancePrivacy()" class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs transition-colors" title="Toggle Balance Privacy">
-                        <i id="privacyIcon" class="fa-solid fa-eye"></i>
-                    </button>
-                    <button onclick="openSettingsModal()" class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs transition-colors" title="Settings">
-                        <i class="fa-solid fa-sliders"></i>
-                    </button>
-                </div>
-            </header>
+                    <!-- 2. CARDS / WALLET VIEW -->
+                    <div id="view-cards" class="view-panel p-6 space-y-6 hidden fade-in">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">My Cards & Wallet</h2>
+                            <p class="text-xs text-slate-500">Manage digital and physical card finishes</p>
+                        </div>
 
-            <!-- TAB 1: DASHBOARD -->
-            <div id="tabDashboard" class="tab-content p-5 space-y-6 flex-1">
-                <!-- Balance Display Card -->
-                <div class="glass-card p-6 rounded-3xl relative overflow-hidden">
-                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-phantom-gold/10 rounded-full blur-2xl"></div>
-                    <span class="text-xs font-medium text-slate-400 tracking-wider">TOTAL ACTIVE BALANCE</span>
-                    <div class="flex items-baseline gap-2 mt-2">
-                        <span id="balanceDisplay" class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">€124,850.50</span>
-                        <span class="text-xs text-emerald-400 font-semibold"><i class="fa-solid fa-arrow-trend-up"></i> +4.2%</span>
+                        <!-- Physical Card Selection Section -->
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Physical Card Finishes</h3>
+                            <div class="grid grid-cols-3 gap-3">
+                                <!-- Matte Black -->
+                                <div onclick="app.selectPhysicalCard('matte')" id="card-fin-matte" class="p-3 rounded-2xl border-2 border-blue-600 bg-slate-900 text-white cursor-pointer transition shadow-md flex flex-col justify-between h-28">
+                                    <div class="flex justify-between items-center text-[10px]">
+                                        <span class="font-mono">PHANTOM</span>
+                                        <i class="fa-solid fa-check-circle text-blue-400"></i>
+                                    </div>
+                                    <div class="text-[11px] font-bold">Matte Black</div>
+                                </div>
+                                <!-- VIP Gold -->
+                                <div onclick="app.selectPhysicalCard('gold')" id="card-fin-gold" class="p-3 rounded-2xl border-2 border-transparent bg-gradient-to-br from-amber-500 to-amber-700 text-white cursor-pointer transition shadow-md flex flex-col justify-between h-28">
+                                    <div class="flex justify-between items-center text-[10px]">
+                                        <span class="font-mono">VIP</span>
+                                        <i class="fa-solid fa-circle text-white/40 check-icon"></i>
+                                    </div>
+                                    <div class="text-[11px] font-bold">VIP Gold</div>
+                                </div>
+                                <!-- Heavy Metal -->
+                                <div onclick="app.selectPhysicalCard('metal')" id="card-fin-metal" class="p-3 rounded-2xl border-2 border-transparent bg-gradient-to-br from-slate-400 to-slate-700 text-white cursor-pointer transition shadow-md flex flex-col justify-between h-28">
+                                    <div class="flex justify-between items-center text-[10px]">
+                                        <span class="font-mono">METAL</span>
+                                        <i class="fa-solid fa-circle text-white/40 check-icon"></i>
+                                    </div>
+                                    <div class="text-[11px] font-bold">Heavy Metal</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Controls -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Card Security & Settings</h3>
+                            <div class="flex items-center justify-between py-2 border-b border-slate-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-lock"></i></div>
+                                    <span class="text-xs font-medium text-slate-800">Freeze Card Temporarily</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="app.toggleFreeze(this)" class="sr-only peer">
+                                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-globe"></i></div>
+                                    <span class="text-xs font-medium text-slate-800">Online Payments Enabled</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Quick Action Buttons -->
-                    <div class="grid grid-cols-4 gap-2 mt-6">
-                        <button onclick="openAddMoneyModal()" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 text-slate-200 transition-all border border-slate-700/50">
-                            <div class="w-9 h-9 rounded-xl bg-phantom-gold/20 text-phantom-gold flex items-center justify-center text-sm">
-                                <i class="fa-solid fa-plus"></i>
-                            </div>
-                            <span class="text-[10px] font-medium">Add Money</span>
-                        </button>
+                    <!-- 3. ANALYTICS VIEW -->
+                    <div id="view-analytics" class="view-panel p-6 space-y-6 hidden fade-in">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Spending Analytics</h2>
+                            <p class="text-xs text-slate-500">October 2026 Financial Overview</p>
+                        </div>
 
-                        <button onclick="openSendMoneyModal()" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 text-slate-200 transition-all border border-slate-700/50">
-                            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">
-                                <i class="fa-solid fa-paper-plane"></i>
+                        <!-- Summary Card -->
+                        <div class="bg-blue-600 text-white p-5 rounded-2xl shadow-lg shadow-blue-600/20 flex justify-between items-center">
+                            <div>
+                                <span class="text-xs opacity-80 uppercase tracking-wider">Total Spent This Month</span>
+                                <div class="text-2xl font-bold mt-1">48,53 £</div>
                             </div>
-                            <span class="text-[10px] font-medium">Transfer</span>
-                        </button>
-
-                        <button onclick="switchTab('vaults')" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 text-slate-200 transition-all border border-slate-700/50">
-                            <div class="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">
-                                <i class="fa-solid fa-vault"></i>
-                            </div>
-                            <span class="text-[10px] font-medium">Vaults</span>
-                        </button>
-
-                        <button onclick="showToast('Analytics', 'Monthly report generated.')" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 text-slate-200 transition-all border border-slate-700/50">
-                            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-lg">
                                 <i class="fa-solid fa-chart-pie"></i>
                             </div>
-                            <span class="text-[10px] font-medium">Insights</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Transactions History Section -->
-                <div>
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-sm font-bold text-slate-200">Recent Transactions</h3>
-                        <div class="flex gap-1 text-[10px]">
-                            <button onclick="filterTransactions('all')" id="filterAll" class="px-2.5 py-1 rounded-lg bg-phantom-gold text-phantom-950 font-bold">All</button>
-                            <button onclick="filterTransactions('sent')" id="filterSent" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white">Sent</button>
-                            <button onclick="filterTransactions('received')" id="filterReceived" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white">Received</button>
                         </div>
-                    </div>
 
-                    <div id="transactionsList" class="space-y-2.5">
-                        <!-- Dynamic Transactions populated via JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: CARDS MANAGEMENT -->
-            <div id="tabCards" class="tab-content hidden p-5 space-y-6 flex-1">
-                <!-- Section Title -->
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-base font-bold text-white">Digital & Physical Cards</h3>
-                        <p class="text-xs text-slate-400">Manage virtual card & physical finish</p>
-                    </div>
-                    <button onclick="flipDigitalCard()" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
-                        <i class="fa-solid fa-rotate"></i> Flip
-                    </button>
-                </div>
-
-                <!-- 3D Flippable Digital Card -->
-                <div class="perspective-1000 w-full h-52">
-                    <div id="digitalCard" class="relative w-full h-full rounded-2xl transform-style-3d transition-transform duration-700 shadow-2xl">
-                        
-                        <!-- CARD FRONT -->
-                        <div id="cardFrontFace" class="absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between backface-hidden card-bg-default border border-slate-700/60 overflow-hidden bg-cover bg-center">
-                            <!-- Top Card Bar -->
-                            <div class="flex justify-between items-start">
-                                <div class="flex items-center gap-2">
-                                    <span class="font-extrabold tracking-wider text-sm text-phantom-gold">PHANTOM</span>
-                                    <span class="text-[10px] text-slate-400 uppercase tracking-widest">Virtual</span>
+                        <!-- Categories breakdown -->
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Spending by Category</h3>
+                            
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold mb-1">
+                                        <span class="text-slate-800">Food & Beverages</span>
+                                        <span class="text-slate-600">25,90 £ (53%)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                        <div class="bg-blue-600 h-full rounded-full" style="width: 53%;"></div>
+                                    </div>
                                 </div>
 
-                                <!-- THREE-DOT MENU BUTTON -->
-                                <div class="relative">
-                                    <button onclick="toggleCardMenu(event)" class="w-8 h-8 rounded-full bg-slate-900/60 hover:bg-slate-900 text-slate-300 flex items-center justify-center transition-colors">
-                                        <i class="fa-solid fa-ellipsis-vertical text-base"></i>
-                                    </button>
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold mb-1">
+                                        <span class="text-slate-800">Travel & Transport</span>
+                                        <span class="text-slate-600">10,03 £ (21%)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                        <div class="bg-indigo-600 h-full rounded-full" style="width: 21%;"></div>
+                                    </div>
+                                </div>
 
-                                    <!-- Context Dropdown Menu -->
-                                    <div id="cardContextMenu" class="hidden absolute right-0 mt-2 w-48 glass-modal rounded-2xl shadow-2xl z-40 overflow-hidden border border-slate-700/80">
-                                        <button onclick="openEditCardInfoModal()" class="w-full px-4 py-3 text-left text-xs text-slate-200 hover:bg-slate-800/80 flex items-center gap-2.5">
-                                            <i class="fa-solid fa-pen text-phantom-gold"></i>
-                                            <span>Edit Card Info</span>
-                                        </button>
-                                        <button onclick="openEditCardAppearanceModal()" class="w-full px-4 py-3 text-left text-xs text-slate-200 hover:bg-slate-800/80 flex items-center gap-2.5 border-t border-slate-800">
-                                            <i class="fa-solid fa-image text-phantom-cyan"></i>
-                                            <span>Edit Appearance</span>
-                                        </button>
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold mb-1">
+                                        <span class="text-slate-800">Shopping & Retail</span>
+                                        <span class="text-slate-600">12,60 £ (26%)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                        <div class="bg-purple-600 h-full rounded-full" style="width: 26%;"></div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Chip & Contactless Icon -->
-                            <div class="flex items-center gap-3 my-2">
-                                <div class="w-10 h-7 rounded-md bg-gradient-to-tr from-yellow-300 to-yellow-600 p-1 flex flex-col justify-between">
-                                    <div class="h-1/3 border-b border-yellow-800/40"></div>
-                                    <div class="h-1/3 border-b border-yellow-800/40"></div>
+                    <!-- 4. PROFILE & SETTINGS VIEW -->
+                    <div id="view-profile" class="view-panel p-6 space-y-6 hidden fade-in">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Profile & Settings</h2>
+                            <p class="text-xs text-slate-500">Personalize your account and preferences</p>
+                        </div>
+
+                        <!-- Profile Picture Section -->
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col items-center text-center">
+                            <div class="relative group mb-3">
+                                <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-600 shadow-md">
+                                    <img id="profile-pfp-img" src="https://placehold.co/100x100/3b82f6/ffffff?text=IB" alt="Profile Picture" class="w-full h-full object-cover">
                                 </div>
-                                <i class="fa-solid fa-wifi text-slate-400 text-sm rotate-90"></i>
+                                <label for="pfp-file-input" class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition cursor-pointer text-xs font-medium">
+                                    <i class="fa-solid fa-camera"></i>
+                                </label>
                             </div>
+                            <h3 class="text-sm font-bold text-slate-900" id="profile-name-title">Isabella Bertucci</h3>
+                            <p class="text-xs text-slate-500">isabella.bertucci@phantom.eu</p>
+                            
+                            <!-- Dynamic File Picker for PFP -->
+                            <div class="mt-4 w-full">
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5 text-left">Change Profile Picture (PFP):</label>
+                                <input type="file" id="pfp-file-input" accept="image/*" onchange="app.handlePfpUpload(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer border border-slate-200 rounded-xl p-1 bg-white">
+                            </div>
+                        </div>
 
-                            <!-- Card Number & Details -->
-                            <div>
-                                <p id="cardNumDisplay" class="font-mono text-lg tracking-widest text-white font-semibold">4532 •••• •••• 8892</p>
-                                <div class="flex justify-between items-end mt-3">
-                                    <div>
-                                        <p class="text-[8px] text-slate-400 tracking-wider">CARD HOLDER</p>
-                                        <p id="cardHolderDisplay" class="text-xs font-bold text-slate-100 uppercase tracking-wider">ALEX MORGAN</p>
+                        <!-- General Settings Options -->
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Account Settings</h3>
+                            
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-user-pen"></i></div>
+                                        <span class="text-xs font-medium text-slate-800">Edit Account Name</span>
                                     </div>
-                                    <div>
-                                        <p class="text-[8px] text-slate-400 tracking-wider">EXPIRES</p>
-                                        <p id="cardExpDisplay" class="text-xs font-bold text-slate-100 font-mono">12/28</p>
+                                    <button onclick="app.openEditNameModal()" class="text-xs text-blue-600 font-semibold hover:underline">Edit</button>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-bell"></i></div>
+                                        <span class="text-xs font-medium text-slate-800">Push Notifications</span>
                                     </div>
-                                    <i class="fa-brands fa-cc-visa text-2xl text-white"></i>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-shield-halved"></i></div>
+                                        <span class="text-xs font-medium text-slate-800">Biometric Security</span>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- CARD BACK -->
-                        <div class="absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between backface-hidden rotate-y-180 card-bg-default border border-slate-700/60 overflow-hidden">
-                            <div class="w-[115%] -mx-5 h-10 bg-slate-950 mt-2"></div>
-                            <div>
-                                <div class="bg-slate-800/90 p-2 rounded-lg flex justify-between items-center my-2">
-                                    <span class="text-[9px] text-slate-400">AUTHORIZED SIGNATURE</span>
-                                    <span id="cardCvvDisplay" class="font-mono text-xs text-white font-bold tracking-widest bg-slate-900 px-2 py-1 rounded">849</span>
-                                </div>
-                                <p class="text-[9px] text-slate-400 leading-tight">This card is property of Phantom Euro Bank. Issued under license.</p>
-                            </div>
-                            <div class="flex justify-between items-center text-[10px] text-slate-400">
-                                <span>Support: +44 20 7946 0912</span>
-                                <i class="fa-solid fa-shield-halved text-phantom-gold"></i>
-                            </div>
-                        </div>
-
                     </div>
+
                 </div>
 
-                <!-- Physical Card Material Finish Selection -->
-                <div class="glass-card p-5 rounded-3xl space-y-4">
-                    <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Select Physical Finish</h4>
-                    
-                    <div id="physicalPreview" class="h-28 rounded-2xl p-4 flex flex-col justify-between finish-matte transition-all duration-300">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-extrabold text-white tracking-widest">PHANTOM PHYSICAL</span>
-                            <span id="finishBadge" class="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">MATTE BLACK</span>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-xs font-mono text-slate-300">•••• 9941</span>
-                            <i class="fa-solid fa-gem text-phantom-gold text-lg"></i>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setPhysicalFinish('matte')" id="finishMatteBtn" class="py-2.5 px-3 rounded-xl border border-phantom-gold text-xs font-bold bg-phantom-gold/10 text-phantom-gold flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-circle text-slate-900 text-sm"></i>
-                            <span>Matte Black</span>
-                        </button>
-                        <button onclick="setPhysicalFinish('gold')" id="finishGoldBtn" class="py-2.5 px-3 rounded-xl border border-slate-800 text-xs font-bold bg-slate-800/50 text-slate-400 hover:text-white flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-circle text-amber-400 text-sm"></i>
-                            <span>VIP Gold</span>
-                        </button>
-                        <button onclick="setPhysicalFinish('metal')" id="finishMetalBtn" class="py-2.5 px-3 rounded-xl border border-slate-800 text-xs font-bold bg-slate-800/50 text-slate-400 hover:text-white flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-circle text-slate-400 text-sm"></i>
-                            <span>Heavy Metal</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: SAVINGS VAULTS (CRUD) -->
-            <div id="tabVaults" class="tab-content hidden p-5 space-y-6 flex-1">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-base font-bold text-white">Savings Vaults</h3>
-                        <p class="text-xs text-slate-400">Lock funds away & track progress</p>
-                    </div>
-                    <button onclick="openAddVaultModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-phantom-gold to-yellow-500 text-phantom-950 text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-phantom-gold/20">
-                        <i class="fa-solid fa-plus"></i> Add Vault
+                <!-- BOTTOM NAVIGATION BAR -->
+                <div class="absolute bottom-0 left-0 right-0 h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 flex justify-around items-center px-4 z-30 shadow-lg">
+                    <button onclick="app.switchTab('home')" id="nav-btn-home" class="flex flex-col items-center justify-center w-16 text-blue-600 transition">
+                        <i class="fa-solid fa-house text-lg"></i>
+                        <span class="text-[10px] font-semibold mt-1">Home</span>
+                    </button>
+                    <button onclick="app.switchTab('cards')" id="nav-btn-cards" class="flex flex-col items-center justify-center w-16 text-slate-400 hover:text-slate-600 transition">
+                        <i class="fa-solid fa-credit-card text-lg"></i>
+                        <span class="text-[10px] font-semibold mt-1">Cards</span>
+                    </button>
+                    <button onclick="app.switchTab('analytics')" id="nav-btn-analytics" class="flex flex-col items-center justify-center w-16 text-slate-400 hover:text-slate-600 transition">
+                        <i class="fa-solid fa-chart-column text-lg"></i>
+                        <span class="text-[10px] font-semibold mt-1">Analytics</span>
+                    </button>
+                    <button onclick="app.switchTab('profile')" id="nav-btn-profile" class="flex flex-col items-center justify-center w-16 text-slate-400 hover:text-slate-600 transition">
+                        <i class="fa-solid fa-user text-lg"></i>
+                        <span class="text-[10px] font-semibold mt-1">Profile</span>
                     </button>
                 </div>
 
-                <!-- Vaults Container List -->
-                <div id="vaultsList" class="space-y-4">
-                    <!-- Dynamic Vault Cards rendered by JS -->
-                </div>
             </div>
 
-            <!-- TAB 4: PROFILE & ACCOUNT -->
-            <div id="tabProfile" class="tab-content hidden p-5 space-y-6 flex-1">
-                <!-- User Banner -->
-                <div class="glass-card p-6 rounded-3xl text-center relative overflow-hidden">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-phantom-gold to-yellow-200 p-1 mx-auto mb-3 shadow-xl">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Avatar" class="w-full h-full object-cover rounded-full">
-                    </div>
-                    <h3 id="profileName" class="text-lg font-extrabold text-white">Alex Morgan</h3>
-                    <p class="text-xs text-phantom-gold font-medium">Phantom Metal Member</p>
-                    <p class="text-[11px] text-slate-500 mt-1">IBAN: DE89 3704 0044 0532 0130 00</p>
-                </div>
+        </div>
 
-                <!-- Account Actions Grid -->
-                <div class="space-y-2">
-                    <button onclick="openSettingsModal()" class="w-full p-4 rounded-2xl glass-card-interactive flex items-center justify-between text-left">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-phantom-gold/20 text-phantom-gold flex items-center justify-center text-sm">
-                                <i class="fa-solid fa-gear"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-white">Settings & Display</p>
-                                <p class="text-[10px] text-slate-400">Layout, Expanded Wide View & preferences</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                    </button>
-
-                    <button onclick="showToast('Security', 'Biometric authentication active.')" class="w-full p-4 rounded-2xl glass-card-interactive flex items-center justify-between text-left">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-white">Security & Passcode</p>
-                                <p class="text-[10px] text-slate-400">FaceID, PIN & Active Sessions</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                    </button>
-
-                    <button onclick="handleLogout()" class="w-full p-4 rounded-2xl glass-card-interactive flex items-center justify-between text-left border-red-500/20 hover:border-red-500/40">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center text-sm">
-                                <i class="fa-solid fa-right-from-bracket"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-red-400">Log Out</p>
-                                <p class="text-[10px] text-slate-500">End current session securely</p>
-                            </div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Bottom Navigation Bar -->
-            <nav class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-phantom-950/90 border-t border-slate-800/80 p-3 backdrop-blur-xl z-30 flex justify-around items-center rounded-b-[32px]">
-                <button onclick="switchTab('dashboard')" id="navDashboard" class="flex flex-col items-center gap-1 text-phantom-gold">
-                    <i class="fa-solid fa-house-circle-check text-base"></i>
-                    <span class="text-[10px] font-bold">Home</span>
-                </button>
-                <button onclick="switchTab('cards')" id="navCards" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-200">
-                    <i class="fa-solid fa-credit-card text-base"></i>
-                    <span class="text-[10px] font-bold">Cards</span>
-                </button>
-                <button onclick="switchTab('vaults')" id="navVaults" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-200">
-                    <i class="fa-solid fa-vault text-base"></i>
-                    <span class="text-[10px] font-bold">Vaults</span>
-                </button>
-                <button onclick="switchTab('profile')" id="navProfile" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-200">
-                    <i class="fa-solid fa-user-gear text-base"></i>
-                    <span class="text-[10px] font-bold">Account</span>
-                </button>
-            </nav>
-
-        </main>
     </div>
 
-    <!-- =================================================================== -->
-    <!-- =================================================================== -->
-
-    <!-- MODAL 1: EDIT CARD INFO -->
-    <div id="editCardInfoModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white">Edit Digital Card Info</h3>
-                <button onclick="closeModal('editCardInfoModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+    <!-- MODALS CONTAINER -->
+    <!-- 1. Edit Card Info Modal -->
+    <div id="modal-edit-card-info" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 space-y-4 text-white shadow-2xl fade-in">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold">Edit Digital Card Info</h3>
+                <button onclick="app.closeModals()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
-            <div class="space-y-3">
+            <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1">CARD HOLDER NAME</label>
-                    <input type="text" id="editCardHolder" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                    <label class="block text-slate-400 mb-1 font-medium">Cardholder Name</label>
+                    <input type="text" id="input-card-holder" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500" value="John Lopez Silva">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1">CARD NUMBER</label>
-                    <input type="text" id="editCardNumber" placeholder="4532 8892 1042 8892" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                    <label class="block text-slate-400 mb-1 font-medium">Card Number</label>
+                    <input type="text" id="input-card-number" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500" value="**** **** **** 2002">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1">EXPIRATION DATE (MM/YY)</label>
-                    <input type="text" id="editCardExp" placeholder="12/28" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                    <label class="block text-slate-400 mb-1 font-medium">Expiration Date</label>
+                    <input type="text" id="input-card-expiry" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500" value="20/21">
                 </div>
             </div>
-
-            <div class="flex gap-2 pt-2">
-                <button onclick="closeModal('editCardInfoModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
-                <button onclick="saveCardInfo()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Save Changes</button>
+            <div class="flex gap-3 pt-2">
+                <button onclick="app.closeModals()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300">Cancel</button>
+                <button onclick="app.saveCardInfo()" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30">Save Changes</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: EDIT CARD APPEARANCE (CUSTOM BACKGROUND) -->
-    <div id="editCardAppearanceModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white">Custom Card Appearance</h3>
-                <button onclick="closeModal('editCardAppearanceModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+    <!-- 2. Edit Card Appearance Modal -->
+    <div id="modal-edit-card-appearance" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 space-y-4 text-white shadow-2xl fade-in">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold">Edit Card Appearance</h3>
+                <button onclick="app.closeModals()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <div class="bg-phantom-gold/10 border border-phantom-gold/30 rounded-2xl p-4 text-xs text-slate-300 space-y-1">
-                <p class="font-bold text-phantom-gold"><i class="fa-solid fa-circle-info mr-1"></i> Recommended Image Specs:</p>
-                <p>• Dimensions: <span class="font-mono text-white">1056 x 672 px</span> (or higher)</p>
-                <p>• Aspect Ratio: <span class="font-mono text-white">1.58 : 1</span></p>
-                <p>• Formats: JPG, PNG, WEBP</p>
+            <div class="space-y-3 text-xs">
+                <p class="text-slate-400">Upload a custom background image for your digital card. Recommended dimensions: <span class="text-blue-400 font-mono font-semibold">1056 x 672 px</span>.</p>
+                <div>
+                    <label class="block text-slate-400 mb-1.5 font-medium">Card Background Image File</label>
+                    <input type="file" id="input-card-bg-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer border border-slate-700 rounded-xl p-1 bg-slate-800">
+                </div>
             </div>
-
-            <div>
-                <label class="block text-[10px] font-bold text-slate-400 mb-2">UPLOAD BACKGROUND IMAGE</label>
-                <input type="file" id="cardBgFileInput" accept="image/*" onchange="handleCardBgUpload(event)" class="w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-phantom-gold file:text-phantom-950 hover:file:bg-yellow-400 cursor-pointer">
-            </div>
-
-            <div class="flex gap-2 pt-2">
-                <button onclick="resetCardAppearance()" class="py-3 px-4 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Reset Default</button>
-                <button onclick="closeModal('editCardAppearanceModal')" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Done</button>
+            <div class="flex gap-3 pt-2">
+                <button onclick="app.closeModals()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300">Cancel</button>
+                <button onclick="app.saveCardAppearance()" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30">Apply Design</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 3: ADD/EDIT VAULT -->
-    <div id="vaultModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 id="vaultModalTitle" class="text-sm font-bold text-white">Create New Vault</h3>
-                <button onclick="closeModal('vaultModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+    <!-- 3. Add / Edit Vault Modal -->
+    <div id="modal-vault" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 space-y-4 text-white shadow-2xl fade-in">
+            <div class="flex justify-between items-center">
+                <h3 id="vault-modal-title" class="text-base font-bold">Create New Savings Goal</h3>
+                <button onclick="app.closeModals()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <input type="hidden" id="vaultEditId">
-            <div class="space-y-3">
+            <div class="space-y-3 text-xs">
+                <input type="hidden" id="vault-edit-id">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1">VAULT NAME</label>
-                    <input type="text" id="vaultNameInput" placeholder="e.g. New Car / Dream Holiday" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                    <label class="block text-slate-400 mb-1 font-medium">Goal Name</label>
+                    <input type="text" id="vault-name-input" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="e.g. Vacation, New Laptop">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1">TARGET GOAL AMOUNT (€)</label>
-                    <input type="number" id="vaultTargetInput" placeholder="5000" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
-                </div>
-                <div id="vaultInitialDepositGroup">
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1">INITIAL DEPOSIT (€)</label>
-                    <input type="number" id="vaultCurrentInput" value="0" placeholder="0" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
-                </div>
-            </div>
-
-            <div class="flex gap-2 pt-2">
-                <button onclick="closeModal('vaultModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
-                <button onclick="saveVault()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Save Vault</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 4: VAULT DEPOSIT / WITHDRAW -->
-    <div id="vaultFundsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 id="vaultFundsTitle" class="text-sm font-bold text-white">Deposit to Vault</h3>
-                <button onclick="closeModal('vaultFundsModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-
-            <input type="hidden" id="vaultFundsId">
-            <input type="hidden" id="vaultFundsType">
-
-            <div>
-                <label class="block text-[10px] font-bold text-slate-400 mb-1">AMOUNT (€)</label>
-                <input type="number" id="vaultFundsAmount" placeholder="100" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
-            </div>
-
-            <div class="flex gap-2 pt-2">
-                <button onclick="closeModal('vaultFundsModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
-                <button onclick="processVaultFunds()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Confirm</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 5: SETTINGS & EXPANDED WIDE VIEW -->
-    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-5">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white">App Settings</h3>
-                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-
-            <div class="space-y-4">
-                <!-- Expanded Wide View Toggle -->
-                <div class="flex items-center justify-between p-3 rounded-2xl bg-phantom-950 border border-slate-800">
-                    <div>
-                        <p class="text-xs font-bold text-white">Expanded Wide View</p>
-                        <p class="text-[10px] text-slate-400">Expand mobile frame to desktop width</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="wideViewToggle" onchange="toggleWideView(this.checked)" class="sr-only peer">
-                        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-phantom-gold"></div>
-                    </label>
-                </div>
-
-                <!-- Privacy Mode Toggle -->
-                <div class="flex items-center justify-between p-3 rounded-2xl bg-phantom-950 border border-slate-800">
-                    <div>
-                        <p class="text-xs font-bold text-white">Hide Balances</p>
-                        <p class="text-[10px] text-slate-400">Mask numbers for social proof</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="privacyToggle" onchange="toggleBalancePrivacy(this.checked)" class="sr-only peer">
-                        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-phantom-gold"></div>
-                    </label>
-                </div>
-            </div>
-
-            <button onclick="closeModal('settingsModal')" class="w-full py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Done</button>
-        </div>
-    </div>
-
-    <!-- MODAL 6: QUICK ADD MONEY -->
-    <div id="addMoneyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white">Add Funds</h3>
-                <button onclick="closeModal('addMoneyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-bold text-slate-400 mb-1">AMOUNT TO ADD (€)</label>
-                <input type="number" id="addMoneyAmount" placeholder="1000" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
-            </div>
-
-            <div class="flex gap-2 pt-2">
-                <button onclick="closeModal('addMoneyModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
-                <button onclick="processAddMoney()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Add Instant Funds</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 7: QUICK SEND MONEY -->
-    <div id="sendMoneyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-modal w-full max-w-md p-6 rounded-3xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white">Send Money</h3>
-                <button onclick="closeModal('sendMoneyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1">RECIPIENT NAME / IBAN</label>
-                    <input type="text" id="sendRecipient" placeholder="e.g. Elena Rostova" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                    <label class="block text-slate-400 mb-1 font-medium">Target Amount (£)</label>
+                    <input type="number" id="vault-target-input" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="1000">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1">AMOUNT (€)</label>
-                    <input type="number" id="sendAmount" placeholder="250" class="w-full bg-phantom-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-phantom-gold">
+                    <label class="block text-slate-400 mb-1 font-medium">Initial Saved Amount (£)</label>
+                    <input type="number" id="vault-current-input" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="150">
                 </div>
             </div>
-
-            <div class="flex gap-2 pt-2">
-                <button onclick="closeModal('sendMoneyModal')" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Cancel</button>
-                <button onclick="processSendMoney()" class="flex-1 py-3 bg-phantom-gold text-phantom-950 font-bold rounded-xl text-xs">Send Payment</button>
+            <div class="flex gap-3 pt-2">
+                <button onclick="app.closeModals()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300">Cancel</button>
+                <button onclick="app.saveVault()" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30">Save Goal</button>
             </div>
         </div>
     </div>
 
+    <!-- 4. Edit Name Modal -->
+    <div id="modal-edit-name" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 space-y-4 text-white shadow-2xl fade-in">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold">Edit Account Name</h3>
+                <button onclick="app.closeModals()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-400 mb-1 font-medium">Full Name</label>
+                    <input type="text" id="input-account-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500" value="Isabella Bertucci">
+                </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button onclick="app.closeModals()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300">Cancel</button>
+                <button onclick="app.saveAccountName()" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30">Save Name</button>
+            </div>
+        </div>
+    </div>
 
-    <!-- =================================================================== -->
-    <!-- =================================================================== -->
+    <!-- APPLICATION JAVASCRIPT -->
     <script>
-        // APP STATE persistence
-        let state = {
-            isLoggedIn: false,
-            balance: 124850.50,
-            isPrivate: false,
-            wideView: false,
-            currentTab: 'dashboard',
-            cardData: {
-                holder: 'ALEX MORGAN',
-                number: '4532 8892 1042 8892',
-                exp: '12/28',
-                cvv: '849',
-                customBg: null
-            },
-            physicalFinish: 'matte',
-            vaults: [
-                { id: 1, name: 'Porsche 911 GT3 Goal', target: 180000, current: 125000, icon: 'fa-car' },
-                { id: 2, name: 'Dubai Penthouse Deposit', target: 500000, current: 310000, icon: 'fa-building' }
-            ],
-            transactions: [
-                { id: 101, title: 'Crypto Yield Payout', type: 'received', amount: 4850.00, date: 'Today, 14:20', icon: 'fa-arrow-down-left' },
-                { id: 102, title: 'Monaco Yacht Club', type: 'sent', amount: -1200.00, date: 'Yesterday, 19:45', icon: 'fa-arrow-up-right' },
-                { id: 103, title: 'Rolex Boutique Geneve', type: 'sent', amount: -18500.00, date: '04 Oct, 11:30', icon: 'fa-gem' }
-            ]
-        };
-
-        // Initialize App on DOM Load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadStateFromStorage();
-            renderAll();
-        });
-
-        function saveStateToStorage() {
-            try {
-                localStorage.setItem('phantom_euro_state', JSON.stringify(state));
-            } catch (e) {
-                console.error("Storage error:", e);
-            }
-        }
-
-        function loadStateFromStorage() {
-            const stored = localStorage.getItem('phantom_euro_state');
-            if (stored) {
-                try {
-                    state = { ...state, ...JSON.parse(stored) };
-                } catch (e) {
-                    console.error("Failed to parse storage:", e);
-                }
-            }
-        }
-
-        function renderAll() {
-            // Auth State
-            if (state.isLoggedIn) {
-                document.getElementById('authSection').classList.add('hidden');
-                document.getElementById('mainAppSection').classList.remove('hidden');
-            } else {
-                document.getElementById('authSection').classList.remove('hidden');
-                document.getElementById('mainAppSection').classList.add('hidden');
-            }
-
-            // Balance Display
-            const balEl = document.getElementById('balanceDisplay');
-            if (state.isPrivate) {
-                balEl.innerText = '••••••••';
-            } else {
-                balEl.innerText = '€' + state.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-
-            // Card Rendering
-            document.getElementById('cardHolderDisplay').innerText = state.cardData.holder;
-            document.getElementById('cardNumDisplay').innerText = formatCardNumber(state.cardData.number);
-            document.getElementById('cardExpDisplay').innerText = state.cardData.exp;
-            document.getElementById('cardCvvDisplay').innerText = state.cardData.cvv;
-            document.getElementById('userDisplayName').innerText = state.cardData.holder;
-            document.getElementById('profileName').innerText = state.cardData.holder;
-
-            const frontFace = document.getElementById('cardFrontFace');
-            if (state.cardData.customBg) {
-                frontFace.style.backgroundImage = `url('${state.cardData.customBg}')`;
-            } else {
-                frontFace.style.backgroundImage = '';
-            }
-
-            // Wide View Container
-            applyWideViewClass(state.wideView);
-            document.getElementById('wideViewToggle').checked = state.wideView;
-            document.getElementById('privacyToggle').checked = state.isPrivate;
-
-            // Render Vaults & Transactions
-            renderVaults();
-            renderTransactions('all');
-            setPhysicalFinish(state.physicalFinish, false);
-        }
-
-        function switchAuthTab(type) {
-            const loginBtn = document.getElementById('tabLoginBtn');
-            const signupBtn = document.getElementById('tabSignupBtn');
-            const nameField = document.getElementById('nameField');
-
-            if (type === 'login') {
-                loginBtn.className = "flex-1 py-2.5 text-xs font-bold rounded-xl bg-phantom-gold text-phantom-950 transition-all shadow-md";
-                signupBtn.className = "flex-1 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-all";
-                nameField.classList.add('hidden');
-            } else {
-                signupBtn.className = "flex-1 py-2.5 text-xs font-bold rounded-xl bg-phantom-gold text-phantom-950 transition-all shadow-md";
-                loginBtn.className = "flex-1 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-all";
-                nameField.classList.remove('hidden');
-            }
-        }
-
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            const nameInput = document.getElementById('authName').value;
-            if (nameInput.trim().length > 0) {
-                state.cardData.holder = nameInput.toUpperCase();
-            }
-            state.isLoggedIn = true;
-            saveStateToStorage();
-            renderAll();
-            showToast('Welcome', 'Authenticated into Phantom Terminal.');
-        }
-
-        function handleLogout() {
-            state.isLoggedIn = false;
-            saveStateToStorage();
-            renderAll();
-            showToast('Logged Out', 'Your session has ended.');
-        }
-
-        function switchTab(tabId) {
-            state.currentTab = tabId;
-            const tabs = ['dashboard', 'cards', 'vaults', 'profile'];
-            tabs.forEach(t => {
-                const content = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
-                const navBtn = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
-                
-                if (t === tabId) {
-                    content.classList.remove('hidden');
-                    if (navBtn) navBtn.className = "flex flex-col items-center gap-1 text-phantom-gold";
-                } else {
-                    content.classList.add('hidden');
-                    if (navBtn) navBtn.className = "flex flex-col items-center gap-1 text-slate-500 hover:text-slate-200";
-                }
-            });
-        }
-
-        function flipDigitalCard() {
-            const card = document.getElementById('digitalCard');
-            card.classList.toggle('rotate-y-180');
-        }
-
-        function toggleCardMenu(e) {
-            e.stopPropagation();
-            const menu = document.getElementById('cardContextMenu');
-            menu.classList.toggle('hidden');
-        }
-
-        document.addEventListener('click', () => {
-            const menu = document.getElementById('cardContextMenu');
-            if (menu && !menu.classList.contains('hidden')) {
-                menu.classList.add('hidden');
-            }
-        });
-
-        function openEditCardInfoModal() {
-            document.getElementById('editCardHolder').value = state.cardData.holder;
-            document.getElementById('editCardNumber').value = state.cardData.number;
-            document.getElementById('editCardExp').value = state.cardData.exp;
-            openModal('editCardInfoModal');
-        }
-
-        function saveCardInfo() {
-            const holder = document.getElementById('editCardHolder').value;
-            const num = document.getElementById('editCardNumber').value;
-            const exp = document.getElementById('editCardExp').value;
-
-            if (holder) state.cardData.holder = holder.toUpperCase();
-            if (num) state.cardData.number = num;
-            if (exp) state.cardData.exp = exp;
-
-            saveStateToStorage();
-            renderAll();
-            closeModal('editCardInfoModal');
-            showToast('Card Updated', 'Digital card details updated.');
-        }
-
-        function openEditCardAppearanceModal() {
-            openModal('editCardAppearanceModal');
-        }
-
-        function handleCardBgUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    state.cardData.customBg = e.target.result;
-                    saveStateToStorage();
-                    renderAll();
-                    showToast('Custom Appearance', 'Card background image applied.');
+        class BankApp {
+            constructor() {
+                this.state = {
+                    isAuthenticated: false,
+                    userName: "Isabella Bertucci",
+                    greetingName: "John Lopez Silva!",
+                    balance: "203,00 £",
+                    cardHolder: "John Lopez Silva",
+                    cardNumber: "**** **** **** 2002",
+                    cardExpiry: "20/21",
+                    cardBgImage: null,
+                    pfpUrl: "https://placehold.co/100x100/3b82f6/ffffff?text=IB",
+                    wideView: false,
+                    physicalCard: "matte",
+                    vaults: [
+                        { id: 1, name: "New Laptop", current: 850, target: 1200 },
+                        { id: 2, name: "Summer Trip", current: 320, target: 500 }
+                    ]
                 };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function resetCardAppearance() {
-            state.cardData.customBg = null;
-            saveStateToStorage();
-            renderAll();
-            closeModal('editCardAppearanceModal');
-            showToast('Appearance Reset', 'Card background set to default.');
-        }
-
-        function formatCardNumber(numStr) {
-            const clean = numStr.replace(/\s+/g, '');
-            if (clean.length < 16) return numStr;
-            return clean.substring(0,4) + ' •••• •••• ' + clean.substring(12);
-        }
-
-        function setPhysicalFinish(finish, notify = true) {
-            state.physicalFinish = finish;
-            const preview = document.getElementById('physicalPreview');
-            const badge = document.getElementById('finishBadge');
-
-            const matteBtn = document.getElementById('finishMatteBtn');
-            const goldBtn = document.getElementById('finishGoldBtn');
-            const metalBtn = document.getElementById('finishMetalBtn');
-
-            // Reset buttons
-            [matteBtn, goldBtn, metalBtn].forEach(b => {
-                b.className = "py-2.5 px-3 rounded-xl border border-slate-800 text-xs font-bold bg-slate-800/50 text-slate-400 hover:text-white flex flex-col items-center gap-1 transition-all";
-            });
-
-            if (finish === 'matte') {
-                preview.className = "h-28 rounded-2xl p-4 flex flex-col justify-between finish-matte transition-all duration-300";
-                badge.innerText = "MATTE BLACK";
-                badge.className = "text-[9px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300";
-                matteBtn.className = "py-2.5 px-3 rounded-xl border border-phantom-gold text-xs font-bold bg-phantom-gold/10 text-phantom-gold flex flex-col items-center gap-1 transition-all";
-            } else if (finish === 'gold') {
-                preview.className = "h-28 rounded-2xl p-4 flex flex-col justify-between finish-gold transition-all duration-300";
-                badge.innerText = "VIP GOLD";
-                badge.className = "text-[9px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40";
-                goldBtn.className = "py-2.5 px-3 rounded-xl border border-phantom-gold text-xs font-bold bg-phantom-gold/10 text-phantom-gold flex flex-col items-center gap-1 transition-all";
-            } else if (finish === 'metal') {
-                preview.className = "h-28 rounded-2xl p-4 flex flex-col justify-between finish-metal transition-all duration-300";
-                badge.innerText = "HEAVY METAL";
-                badge.className = "text-[9px] font-bold px-2 py-0.5 rounded bg-slate-700 text-slate-100";
-                metalBtn.className = "py-2.5 px-3 rounded-xl border border-phantom-gold text-xs font-bold bg-phantom-gold/10 text-phantom-gold flex flex-col items-center gap-1 transition-all";
+                this.loadFromLocalStorage();
             }
 
-            saveStateToStorage();
-            if (notify) showToast('Finish Selected', `Physical card finish changed to ${finish.toUpperCase()}.`);
-        }
-
-        function renderVaults() {
-            const list = document.getElementById('vaultsList');
-            list.innerHTML = '';
-
-            if (state.vaults.length === 0) {
-                list.innerHTML = `<div class="p-8 text-center glass-card rounded-2xl text-slate-500 text-xs">No active vaults found. Create one to begin saving!</div>`;
-                return;
-            }
-
-            state.vaults.forEach(vault => {
-                const pct = Math.min(100, Math.round((vault.current / vault.target) * 100));
+            init() {
+                this.renderVaults();
+                this.updateUI();
                 
-                const item = document.createElement('div');
-                item.className = "glass-card p-5 rounded-2xl space-y-3";
-                item.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-phantom-cyan/20 text-phantom-cyan flex items-center justify-center text-sm">
-                                <i class="fa-solid ${vault.icon || 'fa-vault'}"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-bold text-white">${vault.name}</h4>
-                                <p class="text-[10px] text-slate-400">Target: €${vault.target.toLocaleString()}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <button onclick="openEditVaultModal(${vault.id})" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white text-xs flex items-center justify-center">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            <button onclick="deleteVault(${vault.id})" class="w-7 h-7 rounded-lg bg-red-500/20 text-red-400 hover:text-red-300 text-xs flex items-center justify-center">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-[11px] font-semibold">
-                            <span class="text-white">€${vault.current.toLocaleString()}</span>
-                            <span class="text-phantom-cyan">${pct}%</span>
-                        </div>
-                        <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-phantom-cyan to-blue-500 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-2 pt-1">
-                        <button onclick="openVaultFundsModal(${vault.id}, 'deposit')" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-colors">Deposit</button>
-                        <button onclick="openVaultFundsModal(${vault.id}, 'withdraw')" class="flex-1 py-2 bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold rounded-xl transition-colors">Withdraw</button>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        function openAddVaultModal() {
-            document.getElementById('vaultModalTitle').innerText = "Create New Vault";
-            document.getElementById('vaultEditId').value = "";
-            document.getElementById('vaultNameInput').value = "";
-            document.getElementById('vaultTargetInput').value = "";
-            document.getElementById('vaultCurrentInput').value = "0";
-            document.getElementById('vaultInitialDepositGroup').classList.remove('hidden');
-            openModal('vaultModal');
-        }
-
-        function openEditVaultModal(id) {
-            const vault = state.vaults.find(v => v.id === id);
-            if (!vault) return;
-
-            document.getElementById('vaultModalTitle').innerText = "Edit Vault Goals";
-            document.getElementById('vaultEditId').value = vault.id;
-            document.getElementById('vaultNameInput').value = vault.name;
-            document.getElementById('vaultTargetInput').value = vault.target;
-            document.getElementById('vaultInitialDepositGroup').classList.add('hidden');
-            openModal('vaultModal');
-        }
-
-        function saveVault() {
-            const id = document.getElementById('vaultEditId').value;
-            const name = document.getElementById('vaultNameInput').value;
-            const target = parseFloat(document.getElementById('vaultTargetInput').value);
-            const current = parseFloat(document.getElementById('vaultCurrentInput').value) || 0;
-
-            if (!name || isNaN(target) || target <= 0) {
-                showToast('Invalid Input', 'Please provide a valid vault name & target.');
-                return;
-            }
-
-            if (id) {
-                // Edit existing
-                const vault = state.vaults.find(v => v.id == id);
-                if (vault) {
-                    vault.name = name;
-                    vault.target = target;
-                }
-            } else {
-                // Add new
-                state.vaults.push({
-                    id: Date.now(),
-                    name: name,
-                    target: target,
-                    current: current,
-                    icon: 'fa-piggy-bank'
+                // Close card menu on outside click
+                window.addEventListener('click', (e) => {
+                    const menu = document.getElementById('card-dropdown-menu');
+                    if (menu && !e.target.closest('#digital-card-element')) {
+                        menu.classList.add('hidden');
+                    }
                 });
             }
 
-            saveStateToStorage();
-            renderAll();
-            closeModal('vaultModal');
-            showToast('Vault Saved', 'Vault goal updated successfully.');
-        }
-
-        function deleteVault(id) {
-            state.vaults = state.vaults.filter(v => v.id !== id);
-            saveStateToStorage();
-            renderAll();
-            showToast('Vault Deleted', 'Vault removed.');
-        }
-
-        function openVaultFundsModal(id, type) {
-            const vault = state.vaults.find(v => v.id === id);
-            if (!vault) return;
-
-            document.getElementById('vaultFundsId').value = id;
-            document.getElementById('vaultFundsType').value = type;
-            document.getElementById('vaultFundsTitle').innerText = (type === 'deposit' ? 'Deposit to ' : 'Withdraw from ') + vault.name;
-            document.getElementById('vaultFundsAmount').value = '';
-            openModal('vaultFundsModal');
-        }
-
-        function processVaultFunds() {
-            const id = parseInt(document.getElementById('vaultFundsId').value);
-            const type = document.getElementById('vaultFundsType').value;
-            const amount = parseFloat(document.getElementById('vaultFundsAmount').value);
-
-            if (isNaN(amount) || amount <= 0) {
-                showToast('Error', 'Enter a valid amount.');
-                return;
+            loadFromLocalStorage() {
+                const saved = localStorage.getItem('phantom_euro_bank_state');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        this.state = { ...this.state, ...parsed };
+                    } catch (e) {
+                        console.error("Error loading state", e);
+                    }
+                }
             }
 
-            const vault = state.vaults.find(v => v.id === id);
-            if (!vault) return;
-
-            if (type === 'deposit') {
-                if (state.balance < amount) {
-                    showToast('Insufficient Funds', 'Account balance is too low.');
-                    return;
-                }
-                state.balance -= amount;
-                vault.current += amount;
-                showToast('Funds Deposited', `€${amount} added to ${vault.name}`);
-            } else {
-                if (vault.current < amount) {
-                    showToast('Error', 'Vault balance is lower than request.');
-                    return;
-                }
-                vault.current -= amount;
-                state.balance += amount;
-                showToast('Funds Withdrawn', `€${amount} returned to active balance.`);
+            saveToLocalStorage() {
+                localStorage.setItem('phantom_euro_bank_state', JSON.stringify(this.state));
             }
 
-            saveStateToStorage();
-            renderAll();
-            closeModal('vaultFundsModal');
-        }
+            login() {
+                this.state.isAuthenticated = true;
+                this.saveToLocalStorage();
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                this.init();
+            }
 
-        function renderTransactions(filter = 'all') {
-            const list = document.getElementById('transactionsList');
-            list.innerHTML = '';
+            logout() {
+                this.state.isAuthenticated = false;
+                this.saveToLocalStorage();
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('main-app').classList.add('hidden');
+            }
 
-            let filtered = state.transactions;
-            if (filter === 'sent') filtered = state.transactions.filter(t => t.type === 'sent');
-            if (filter === 'received') filtered = state.transactions.filter(t => t.type === 'received');
+            switchTab(tabName) {
+                const tabs = ['home', 'cards', 'analytics', 'profile'];
+                tabs.forEach(t => {
+                    const panel = document.getElementById(`view-${t}`);
+                    const btn = document.getElementById(`nav-btn-${t}`);
+                    if (panel) panel.classList.add('hidden');
+                    if (btn) {
+                        btn.classList.remove('text-blue-600');
+                        btn.classList.add('text-slate-400');
+                    }
+                });
 
-            filtered.forEach(tx => {
-                const item = document.createElement('div');
-                item.className = "glass-card p-3.5 rounded-2xl flex items-center justify-between";
+                const activePanel = document.getElementById(`view-${tabName}`);
+                const activeBtn = document.getElementById(`nav-btn-${tabName}`);
+                if (activePanel) activePanel.classList.remove('hidden');
+                if (activeBtn) {
+                    activeBtn.classList.remove('text-slate-400');
+                    activeBtn.classList.add('text-blue-600');
+                }
+            }
+
+            toggleWideView() {
+                this.state.wideView = !this.state.wideView;
+                const frame = document.getElementById('device-frame');
+                const btnText = document.getElementById('wide-view-text');
+                const topHeader = document.getElementById('desktop-top-header');
                 
-                const isReceived = tx.amount > 0;
-                const amtFormatted = (isReceived ? '+' : '') + '€' + Math.abs(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2 });
-
-                item.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl ${isReceived ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-300'} flex items-center justify-center text-sm">
-                            <i class="fa-solid ${tx.icon}"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-white">${tx.title}</p>
-                            <p class="text-[10px] text-slate-400">${tx.date}</p>
-                        </div>
-                    </div>
-                    <span class="text-xs font-extrabold ${isReceived ? 'text-emerald-400' : 'text-slate-200'}">${amtFormatted}</span>
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        function filterTransactions(type) {
-            ['All', 'Sent', 'Received'].forEach(t => {
-                const btn = document.getElementById('filter' + t);
-                if (t.toLowerCase() === type) {
-                    btn.className = "px-2.5 py-1 rounded-lg bg-phantom-gold text-phantom-950 font-bold";
+                if (this.state.wideView) {
+                    frame.classList.remove('sm:max-w-[480px]', 'sm:h-[880px]', 'sm:rounded-[40px]');
+                    frame.classList.add('max-w-5xl', 'h-[90vh]', 'rounded-none', 'sm:rounded-3xl');
+                    btnText.textContent = "Mobile View";
+                    topHeader.classList.add('max-w-5xl');
                 } else {
-                    btn.className = "px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white";
+                    frame.classList.add('sm:max-w-[480px]', 'sm:h-[880px]', 'sm:rounded-[40px]');
+                    frame.classList.remove('max-w-5xl', 'h-[90vh]', 'rounded-none', 'sm:rounded-3xl');
+                    btnText.textContent = "Expanded Wide View";
+                    topHeader.classList.remove('max-w-5xl');
                 }
-            });
-            renderTransactions(type);
-        }
-
-        function openAddMoneyModal() { openModal('addMoneyModal'); }
-        function openSendMoneyModal() { openModal('sendMoneyModal'); }
-
-        function processAddMoney() {
-            const amt = parseFloat(document.getElementById('addMoneyAmount').value);
-            if (isNaN(amt) || amt <= 0) return;
-
-            state.balance += amt;
-            state.transactions.unshift({
-                id: Date.now(),
-                title: 'Instant Bank Top-Up',
-                type: 'received',
-                amount: amt,
-                date: 'Just now',
-                icon: 'fa-building-columns'
-            });
-
-            saveStateToStorage();
-            renderAll();
-            closeModal('addMoneyModal');
-            showToast('Money Added', `€${amt.toLocaleString()} added to your balance.`);
-        }
-
-        function processSendMoney() {
-            const recipient = document.getElementById('sendRecipient').value;
-            const amt = parseFloat(document.getElementById('sendAmount').value);
-            if (!recipient || isNaN(amt) || amt <= 0) return;
-
-            if (state.balance < amt) {
-                showToast('Error', 'Insufficient balance for transfer.');
-                return;
+                this.saveToLocalStorage();
             }
 
-            state.balance -= amt;
-            state.transactions.unshift({
-                id: Date.now(),
-                title: 'Transfer to ' + recipient,
-                type: 'sent',
-                amount: -amt,
-                date: 'Just now',
-                icon: 'fa-paper-plane'
-            });
+            toggleCardMenu(event) {
+                event.stopPropagation();
+                const menu = document.getElementById('card-dropdown-menu');
+                menu.classList.toggle('hidden');
+            }
 
-            saveStateToStorage();
-            renderAll();
-            closeModal('sendMoneyModal');
-            showToast('Payment Sent', `€${amt.toLocaleString()} sent to ${recipient}.`);
-        }
+            openEditCardInfoModal() {
+                document.getElementById('card-dropdown-menu').classList.add('hidden');
+                document.getElementById('input-card-holder').value = this.state.cardHolder;
+                document.getElementById('input-card-number').value = this.state.cardNumber;
+                document.getElementById('input-card-expiry').value = this.state.cardExpiry;
+                document.getElementById('modal-edit-card-info').classList.remove('hidden');
+            }
 
-        function toggleWideView(enable) {
-            state.wideView = enable;
-            applyWideViewClass(enable);
-            saveStateToStorage();
-        }
+            saveCardInfo() {
+                this.state.cardHolder = document.getElementById('input-card-holder').value;
+                this.state.cardNumber = document.getElementById('input-card-number').value;
+                this.state.cardExpiry = document.getElementById('input-card-expiry').value;
+                this.saveToLocalStorage();
+                this.updateUI();
+                this.closeModals();
+            }
 
-        function applyWideViewClass(enable) {
-            const container = document.getElementById('appContainer');
-            if (enable) {
-                container.classList.remove('max-w-[480px]');
-                container.classList.add('max-w-5xl');
-            } else {
-                container.classList.remove('max-w-5xl');
-                container.classList.add('max-w-[480px]');
+            openEditCardAppearanceModal() {
+                document.getElementById('card-dropdown-menu').classList.add('hidden');
+                document.getElementById('modal-edit-card-appearance').classList.remove('hidden');
+            }
+
+            saveCardAppearance() {
+                const fileInput = document.getElementById('input-card-bg-file');
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.state.cardBgImage = e.target.result;
+                        this.saveToLocalStorage();
+                        this.updateUI();
+                        this.closeModals();
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    this.closeModals();
+                }
+            }
+
+            handlePfpUpload(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.state.pfpUrl = e.target.result;
+                        this.saveToLocalStorage();
+                        this.updateUI();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            openEditNameModal() {
+                document.getElementById('input-account-name').value = this.state.userName;
+                document.getElementById('modal-edit-name').classList.remove('hidden');
+            }
+
+            saveAccountName() {
+                this.state.userName = document.getElementById('input-account-name').value;
+                this.saveToLocalStorage();
+                this.updateUI();
+                this.closeModals();
+            }
+
+            selectPhysicalCard(finish) {
+                this.state.physicalCard = finish;
+                ['matte', 'gold', 'metal'].forEach(f => {
+                    const el = document.getElementById(`card-fin-${f}`);
+                    if (el) {
+                        if (f === finish) {
+                            el.classList.add('border-blue-600', 'ring-2', 'ring-blue-500/30');
+                            el.classList.remove('border-transparent');
+                            const icon = el.querySelector('.fa-check-circle, .check-icon');
+                            if (icon) {
+                                icon.className = "fa-solid fa-check-circle text-blue-400";
+                            }
+                        } else {
+                            el.classList.remove('border-blue-600', 'ring-2', 'ring-blue-500/30');
+                            el.classList.add('border-transparent');
+                            const icon = el.querySelector('.fa-check-circle, .check-icon');
+                            if (icon) {
+                                icon.className = "fa-solid fa-circle text-white/40 check-icon";
+                            }
+                        }
+                    }
+                });
+                this.saveToLocalStorage();
+            }
+
+            openAddVaultModal(vaultId = null) {
+                document.getElementById('vault-edit-id').value = vaultId || '';
+                if (vaultId) {
+                    const v = this.state.vaults.find(item => item.id === vaultId);
+                    if (v) {
+                        document.getElementById('vault-modal-title').textContent = "Edit Savings Goal";
+                        document.getElementById('vault-name-input').value = v.name;
+                        document.getElementById('vault-target-input').value = v.target;
+                        document.getElementById('vault-current-input').value = v.current;
+                    }
+                } else {
+                    document.getElementById('vault-modal-title').textContent = "Create New Savings Goal";
+                    document.getElementById('vault-name-input').value = '';
+                    document.getElementById('vault-target-input').value = '';
+                    document.getElementById('vault-current-input').value = '';
+                }
+                document.getElementById('modal-vault').classList.remove('hidden');
+            }
+
+            saveVault() {
+                const id = document.getElementById('vault-edit-id').value;
+                const name = document.getElementById('vault-name-input').value || "Savings Goal";
+                const target = parseFloat(document.getElementById('vault-target-input').value) || 500;
+                const current = parseFloat(document.getElementById('vault-current-input').value) || 0;
+
+                if (id) {
+                    const v = this.state.vaults.find(item => item.id == id);
+                    if (v) {
+                        v.name = name;
+                        v.target = target;
+                        v.current = current;
+                    }
+                } else {
+                    const newVault = {
+                        id: Date.now(),
+                        name,
+                        target,
+                        current
+                    };
+                    this.state.vaults.push(newVault);
+                }
+
+                this.saveToLocalStorage();
+                this.renderVaults();
+                this.closeModals();
+            }
+
+            deleteVault(id) {
+                this.state.vaults = this.state.vaults.filter(v => v.id !== id);
+                this.saveToLocalStorage();
+                this.renderVaults();
+            }
+
+            depositVault(id, amount) {
+                const v = this.state.vaults.find(item => item.id === id);
+                if (v) {
+                    v.current += amount;
+                    if (v.current > v.target) v.current = v.target;
+                    this.saveToLocalStorage();
+                    this.renderVaults();
+                }
+            }
+
+            renderVaults() {
+                const container = document.getElementById('vaults-list');
+                if (!container) return;
+
+                if (this.state.vaults.length === 0) {
+                    container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">No savings goals yet. Create one above!</div>`;
+                    return;
+                }
+
+                container.innerHTML = this.state.vaults.map(v => {
+                    const pct = Math.min(100, Math.round((v.current / v.target) * 100));
+                    return `
+                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold"><i class="fa-solid fa-bullseye"></i></div>
+                                    <span class="text-xs font-bold text-slate-900">${v.name}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="app.depositVault(${v.id}, 25)" class="px-2 py-1 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-[10px] font-semibold rounded-lg transition" title="Deposit +25 £">+25£</button>
+                                    <button onclick="app.openAddVaultModal(${v.id})" class="text-slate-400 hover:text-blue-600 text-xs p-1"><i class="fa-solid fa-pen"></i></button>
+                                    <button onclick="app.deleteVault(${v.id})" class="text-slate-400 hover:text-rose-600 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-[11px] font-semibold">
+                                <span class="text-slate-600">${v.current.toFixed(2)} £ saved</span>
+                                <span class="text-slate-400">Target: ${v.target.toFixed(2)} £ (${pct}%)</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                <div class="bg-blue-600 h-full rounded-full transition-all duration-300" style="width: ${pct}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            toggleFreeze(checkbox) {
+                const card = document.getElementById('digital-card-element');
+                if (checkbox.checked) {
+                    card.style.filter = "grayscale(80%) blur(1px)";
+                } else {
+                    card.style.filter = "none";
+                }
+            }
+
+            closeModals() {
+                const modals = [
+                    'modal-edit-card-info',
+                    'modal-edit-card-appearance',
+                    'modal-vault',
+                    'modal-edit-name'
+                ];
+                modals.forEach(id => {
+                    const m = document.getElementById(id);
+                    if (m) m.classList.add('hidden');
+                });
+            }
+
+            updateUI() {
+                // Header names
+                document.getElementById('header-user-name').innerHTML = `${this.state.userName} <span class="inline-block">💻</span>`;
+                document.getElementById('home-greeting-name').textContent = this.state.userName + "!";
+                document.getElementById('profile-name-title').textContent = this.state.userName;
+
+                // Profile pictures
+                document.getElementById('nav-pfp-preview').src = this.state.pfpUrl;
+                document.getElementById('profile-pfp-img').src = this.state.pfpUrl;
+
+                // Digital card
+                document.getElementById('card-balance-display').textContent = this.state.balance;
+                document.getElementById('card-number-display').textContent = this.state.cardNumber;
+                document.getElementById('card-holder-display').textContent = this.state.cardHolder;
+                document.getElementById('card-expiry-display').textContent = this.state.cardExpiry;
+
+                const bgEl = document.getElementById('card-custom-bg');
+                if (this.state.cardBgImage) {
+                    bgEl.style.backgroundImage = `url('${this.state.cardBgImage}')`;
+                    bgEl.classList.remove('hidden');
+                } else {
+                    bgEl.classList.add('hidden');
+                }
+
+                if (this.state.physicalCard) {
+                    this.selectPhysicalCard(this.state.physicalCard);
+                }
             }
         }
 
-        function toggleBalancePrivacy(forcedValue) {
-            if (typeof forcedValue === 'boolean') {
-                state.isPrivate = forcedValue;
-            } else {
-                state.isPrivate = !state.isPrivate;
+        const app = new BankApp();
+
+        window.onload = function() {
+            // Check if previously authenticated in session
+            if (app.state.isAuthenticated) {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                app.init();
             }
-            saveStateToStorage();
-            renderAll();
-        }
-
-        function openSettingsModal() { openModal('settingsModal'); }
-
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        function showToast(title, message) {
-            const toast = document.getElementById('toastNotification');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastMessage').innerText = message;
-
-            toast.classList.remove('translate-x-full', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-x-full', 'opacity-0');
-            }, 3500);
-        }
+        };
     </script>
 </body>
 </html>
